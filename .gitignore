@@ -1,0 +1,19 @@
+# Ignore target directory
+target/
+
+# Ignore IDE settings
+*.iml
+.idea/
+*.classpath
+*.project
+
+# Ignore OS files
+.DS_Store
+
+# Ignore logs and temp files
+*.log
+*.tmp
+
+# Ignore database files
+*.db
+twitter-clone-java.db
