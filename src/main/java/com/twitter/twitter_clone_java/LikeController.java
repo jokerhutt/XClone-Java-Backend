@@ -1,5 +1,6 @@
 package com.twitter.twitter_clone_java;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +19,13 @@ import java.util.Map;
 public class LikeController {
 	
 	private final LikeChecker likeChecker;
+	private final LikeRepository likeRepository;
+	private final PostRepository postRepository;
 	
-	public LikeController (LikeChecker likeChecker) {
+	public LikeController (LikeChecker likeChecker, LikeRepository likeRepository, PostRepository postRepository) {
 		this.likeChecker = likeChecker;
+		this.likeRepository = likeRepository;
+		this.postRepository = postRepository;
 	}
 	
 	@Transactional
@@ -50,6 +55,29 @@ public class LikeController {
 		List<Like> fetchedLikes = likeChecker.fetchPostLikes(POSTID);
 		return ResponseEntity.ok(fetchedLikes);
 	}
+	
+	@GetMapping("/grabuserlikes/{profileUserId}")
+	public ResponseEntity<List<Post>> getLikedPostsByUserId(@PathVariable Long profileUserId) {
+		
+		for (int i = 0; i < 20; i++) {
+			System.out.println("Liker id is: " + profileUserId);
+		}
+	
+		List<Like> userLikedPosts = likeRepository.findByLikerId(profileUserId);
+		List<Long> likedPostIds = new ArrayList<>();
+		
+		for (Like like : userLikedPosts) {
+		    likedPostIds.add(like.getPostId());
+		}
+		
+		List<Post> likedPosts = postRepository.findAllById(likedPostIds);
+		
+	    return ResponseEntity.ok(likedPosts);
+		
+	}
+	
+	
+	
 }
 
 
