@@ -32,11 +32,6 @@ public class GrabUser {
 	
 	@GetMapping("/users/{postId}")
 	public ResponseEntity<User> getUserByPostId(@PathVariable Long postId) {
-		
-//		for (int i = 0; i < 20; i++) {
-//			System.out.println("Meow meow motherfucker: " + postId);
-//		}
-//		
 		Post tempPost = postFinder.findPostById(postId);
 		
 		Long tempCreatorId = tempPost.getCreatorId();
@@ -48,21 +43,21 @@ public class GrabUser {
 	}
 	
 	@GetMapping("/grabusers/{profileUserId}")
-	public ResponseEntity<User> getUserByUserId(@PathVariable Long creatorId) {
+	public ResponseEntity<User> getUserByUserId(@PathVariable Long profileUserId) {
 		
-		User fetchedProfileUser = userFinder.findUserById(creatorId);
+		User fetchedProfileUser = userFinder.findUserById(profileUserId);
 		return ResponseEntity.ok(fetchedProfileUser);
 		
 	}
 	
 	@GetMapping("/grabposts/{profileUserId}")
-	public ResponseEntity<List<Post>> getPostByUserId(@PathVariable Long creatorId) {
+	public ResponseEntity<List<Post>> getPostByUserId(@PathVariable Long profileUserId) {
 		
 		for (int i = 0; i < 20; i++) {
-			System.out.println("Creator id is: " + creatorId);
+			System.out.println("Creator id is: " + profileUserId);
 		}
 		
-		List<Post> fetchedPosts = postRepository.findAllByCreatorId(creatorId);
+		List<Post> fetchedPosts = postRepository.findAllByCreatorId(profileUserId);
 		return ResponseEntity.ok(fetchedPosts);
 	}
 	
