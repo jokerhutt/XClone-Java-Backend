@@ -60,7 +60,5 @@ public class GrabUser {
 		List<Post> fetchedPosts = postRepository.findAllByCreatorId(profileUserId);
 		return ResponseEntity.ok(fetchedPosts);
 	}
-	
-	
 
 }
