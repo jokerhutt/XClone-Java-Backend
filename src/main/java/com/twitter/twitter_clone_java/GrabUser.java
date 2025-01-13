@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +22,15 @@ public class GrabUser {
 	private final PostFinder postFinder;
 	private final UserRepository userRepository;
 	private final UserFinder userFinder;
+	private final RepostRepository repostRepository;
 	
 	public GrabUser(PostRepository postRepository, PostFinder postFinder,
-			UserRepository userRepository, UserFinder userFinder) {
+			UserRepository userRepository, UserFinder userFinder, RepostRepository repostRepository) {
 		this.postRepository = postRepository;
 		this.postFinder = postFinder;
 		this.userFinder = userFinder;
 		this.userRepository = userRepository;
+		this.repostRepository = repostRepository;
 	}
 	
 	@GetMapping("/users/{postId}")
@@ -60,6 +63,33 @@ public class GrabUser {
 		List<Post> fetchedPosts = postRepository.findAllByCreatorId(profileUserId);
 		return ResponseEntity.ok(fetchedPosts);
 	}
+	
+	@GetMapping("/grabpostsandreposts/{profileUserId}")
+	public ResponseEntity<List<Post>> getPostsAndRepostsByUserId(@PathVariable Long profileUserId) {
+		
+		List <Post> posts = postRepository.findAllByCreatorId(profileUserId);
+		List <Repost> reposts = repostRepository.findRepostByReposterId(profileUserId);
+		
+		List<Long> repostIds = new ArrayList<>();
+		
+		if (reposts != null) {
+			for (Repost repost : reposts) {
+				repostIds.add(repost.getPostId());
+			}
+		}
+
+		
+		List <Post> originalReposts = postRepository.findAllById(repostIds);
+		
+		if (originalReposts != null) {
+				posts.addAll(originalReposts);
+		}
+		
+		posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+		
+		return ResponseEntity.ok(posts);
+	}
+	
 	
 	
 	
