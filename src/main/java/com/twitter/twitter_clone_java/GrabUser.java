@@ -78,7 +78,6 @@ public class GrabUser {
 			}
 		}
 
-		
 		List <Post> originalReposts = postRepository.findAllById(repostIds);
 		
 		if (originalReposts != null) {
@@ -88,6 +87,15 @@ public class GrabUser {
 		posts.sort(Comparator.comparing(Post::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
 		
 		return ResponseEntity.ok(posts);
+	}
+	
+	@GetMapping("/grabrepost/{profileUserId}")
+	public ResponseEntity<Post> grabPostByReposterId(@PathVariable Long profileUserId) {
+		
+		Repost tempRepost = repostRepository.findSingleRepostByReposterId(profileUserId);
+		Long originalPostId = tempRepost.getPostId();
+		return ResponseEntity.ok(postFinder.findPostById(originalPostId));
+		
 	}
 	
 	

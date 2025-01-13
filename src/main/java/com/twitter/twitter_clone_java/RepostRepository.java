@@ -12,4 +12,5 @@ public interface RepostRepository extends JpaRepository<Repost, Long>{
 	List<Repost> findByPostId(Long postId);
 	Optional<Repost> findRepostByPostIdAndReposterId(Long postId, Long reposterId);
 	List<Repost> findRepostByReposterId(Long reposterId);
+	Repost findSingleRepostByReposterId(Long reposterId);
 }

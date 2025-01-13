@@ -21,11 +21,13 @@ public class LikeController {
 	private final LikeChecker likeChecker;
 	private final LikeRepository likeRepository;
 	private final PostRepository postRepository;
+	private final NotificationHandler notificationHandler;
 	
-	public LikeController (LikeChecker likeChecker, LikeRepository likeRepository, PostRepository postRepository) {
+	public LikeController (NotificationHandler notificationHandler, LikeChecker likeChecker, LikeRepository likeRepository, PostRepository postRepository) {
 		this.likeChecker = likeChecker;
 		this.likeRepository = likeRepository;
 		this.postRepository = postRepository;
+		this.notificationHandler = notificationHandler;
 	}
 	
 	@Transactional
@@ -37,7 +39,16 @@ public class LikeController {
 		Long postId = ((Number) data.get("postId")).longValue();
 		Long likerId = ((Number) data.get("likerId")).longValue();
 		
-		likeChecker.handleLikeFlag(postId, likerId);
+		Notification newNotification = new Notification();
+		newNotification.setNotificationType((String) data.get("notificationType"));
+		newNotification.setNotificationObject(Long.valueOf(data.get("notificationObject").toString()));
+		newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
+		newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
+		newNotification.setIsRead(false);
+		
+		likeChecker.handleLikeFlag(postId, likerId, newNotification);
+		
+		
 		
 		List<Like> packagedLike = likeChecker.fetchPostLikes(postId);
 		

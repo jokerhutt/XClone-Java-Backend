@@ -23,5 +23,7 @@ public class PostFinder {
 	            .orElseThrow(() -> new RuntimeException(
 	                "Post not found for creator id: " + creatorId));
 	}
+	
+	
 
 }
