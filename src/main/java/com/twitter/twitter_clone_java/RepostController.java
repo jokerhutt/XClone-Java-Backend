@@ -18,9 +18,11 @@ import java.util.Map;
 public class RepostController {
 	
 	private final RepostChecker repostChecker;
+	private final NotificationHandler notificationHandler;
 	
-	public RepostController (RepostChecker repostChecker) {
+	public RepostController (RepostChecker repostChecker, NotificationHandler notificationHandler) {
 		this.repostChecker = repostChecker;
+		this.notificationHandler = notificationHandler;
 	}
 	
 	@Transactional
@@ -32,7 +34,14 @@ public class RepostController {
 		Long postId = ((Number) data.get("postId")).longValue();
 		Long reposterId = ((Number) data.get("reposterId")).longValue();
 		
-		repostChecker.handleRepostFlag(postId, reposterId);
+		Notification newNotification = new Notification();
+		newNotification.setNotificationType((String) data.get("notificationType"));
+		newNotification.setNotificationObject(Long.valueOf(data.get("notificationObject").toString()));
+		newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
+		newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
+		newNotification.setIsRead(false);
+		
+		repostChecker.handleRepostFlag(postId, reposterId, newNotification);
 		List <Repost> packagedReposts = repostChecker.fetchPostReposts(postId);
 		return ResponseEntity.ok(packagedReposts);	
 	}

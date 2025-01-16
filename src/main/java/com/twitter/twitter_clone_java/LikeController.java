@@ -48,8 +48,6 @@ public class LikeController {
 		
 		likeChecker.handleLikeFlag(postId, likerId, newNotification);
 		
-		
-		
 		List<Like> packagedLike = likeChecker.fetchPostLikes(postId);
 		
 		return ResponseEntity.ok(packagedLike);
