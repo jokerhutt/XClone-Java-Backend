@@ -41,13 +41,13 @@ public class ReplyController {
         }
 		
 		System.out.println("Reply text is: " +  replyText);
-		Reply newReplyObject = replyHandler.handleNewReply(replyObjectId, replyReceiverId, replySenderId, replyText);
+		Optional<Reply> newReplyObject = replyHandler.handleNewReply(replyObjectId, replyReceiverId, replySenderId, replyText);
         
 		if (newReplyObject == null) {
             return ResponseEntity.badRequest().body("Failed to create reply");
         } else {
-        	
-    		Long replyId = newReplyObject.getId();
+        	Reply newReplyThing = (newReplyObject.get());
+    		Long replyId = newReplyThing.getId();
     		
     		System.out.println("Reply ID is: " + replyId);
     		
@@ -60,13 +60,8 @@ public class ReplyController {
     		
     		notificationHandler.handleNewNotification(newNotification);
     		
-    		
-    		
     		return ResponseEntity.ok("Nice");
-        	
         }
-		
-
 	}
 	
 	@GetMapping("replies/{postID}")
@@ -75,26 +70,24 @@ public class ReplyController {
 		return ResponseEntity.ok(fetchedPostReplies);
 	}
 	
-		@GetMapping("grabreply/{replyID}")
-		public ResponseEntity <?> getReplyByReplyId(@PathVariable Long replyID) {
-			System.out.println("reply id is " + replyID);
-			Optional<Reply> fetchedReply = replyHandler.fetchReplyById(replyID);
-			
-		    if (fetchedReply.isPresent()) {
-		        // Return the Reply object inside the ResponseEntity
-		        return ResponseEntity.ok(fetchedReply.get());
-		    } else {
-		        // Return a 404 response if the reply is not found
-		        return ResponseEntity.badRequest().body("Reply not found");
-		    }
-		}
+	@GetMapping("grabreply/{replyID}")
+	public ResponseEntity <?> getReplyByReplyId(@PathVariable Long replyID) {
+		System.out.println("reply id is " + replyID);
+		Optional<Reply> fetchedReply = replyHandler.fetchReplyById(replyID);
 		
-		@GetMapping("grabuserreplies/{profileUserId}")
-		public ResponseEntity<List<Reply>> getAllRepliesByUserId(@PathVariable Long profileUserId) {
-			List<Reply> fetchedUserReplies = replyHandler.fetchRepliesByUser(profileUserId);
-			return ResponseEntity.ok(fetchedUserReplies);
-		}
+	    if (fetchedReply.isPresent()) {
+	        return ResponseEntity.ok(fetchedReply.get());
+	    } else {
+	        return ResponseEntity.badRequest().body("Reply not found");
+	    }
+	}
 	
+	@GetMapping("grabuserreplies/{profileUserId}")
+	public ResponseEntity<List<Reply>> getAllRepliesByUserId(@PathVariable Long profileUserId) {
+		List<Reply> fetchedUserReplies = replyHandler.fetchRepliesByUser(profileUserId);
+		return ResponseEntity.ok(fetchedUserReplies);
+	}
+
 	
 	
 }

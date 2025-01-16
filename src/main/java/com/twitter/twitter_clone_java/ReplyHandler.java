@@ -17,7 +17,7 @@ public class ReplyHandler {
 		this.notificationHandler = notificationHandler;
 	}
 	
-	public Reply handleNewReply (Long replyObjectId, Long replyReceiverId, Long replySenderId, String replyText) {
+	public Optional<Reply> handleNewReply (Long replyObjectId, Long replyReceiverId, Long replySenderId, String replyText) {
 		
 		Reply newReply = new Reply();
 		newReply.setReplyObjectId(replyObjectId);
@@ -27,7 +27,7 @@ public class ReplyHandler {
 		
 		replyRepository.save(newReply);
 		
-		return replyRepository.findByReplyObjectId(newReply.getReplyObjectId());
+		return replyRepository.findById(newReply.getId());
 		
 		
 	}
