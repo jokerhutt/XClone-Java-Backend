@@ -87,7 +87,12 @@ public class ReplyController {
 		        // Return a 404 response if the reply is not found
 		        return ResponseEntity.badRequest().body("Reply not found");
 		    }
-			
+		}
+		
+		@GetMapping("grabuserreplies/{profileUserId}")
+		public ResponseEntity<List<Reply>> getAllRepliesByUserId(@PathVariable Long profileUserId) {
+			List<Reply> fetchedUserReplies = replyHandler.fetchRepliesByUser(profileUserId);
+			return ResponseEntity.ok(fetchedUserReplies);
 		}
 	
 	

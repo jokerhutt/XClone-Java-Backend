@@ -42,6 +42,16 @@ public class ReplyHandler {
 		
 	}
 	
+	public  List<Reply> fetchRepliesByUser (Long senderId) {
+		List<Reply> fetchedUserReplies = replyRepository.findAllByReplySenderId(senderId);
+		if (fetchedUserReplies == null) {
+			return new ArrayList<>();
+		} else {
+			return fetchedUserReplies;
+		}
+		
+	}
+	
 	public Optional<Reply> fetchReplyById (Long id) {
 		Optional<Reply> fetchedReply = replyRepository.findById(id);
 			return fetchedReply;

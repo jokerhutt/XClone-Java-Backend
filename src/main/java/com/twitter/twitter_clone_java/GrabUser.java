@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -95,6 +96,19 @@ public class GrabUser {
 		Repost tempRepost = repostRepository.findSingleRepostByReposterId(profileUserId);
 		Long originalPostId = tempRepost.getPostId();
 		return ResponseEntity.ok(postFinder.findPostById(originalPostId));
+		
+	}
+	
+	@GetMapping("/grabpostbyrepostid/{postID}")
+	public ResponseEntity<?> grabPostByRepostId(@PathVariable Long postID) {
+		
+		Optional<Post> tempPost = postRepository.findByPostId(postID);
+		
+		if (tempPost.isPresent()) {
+			return ResponseEntity.ok(tempPost.get());
+		} else {
+			return ResponseEntity.badRequest().body("Post not found");
+		}
 		
 	}
 	
