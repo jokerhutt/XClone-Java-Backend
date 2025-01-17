@@ -34,9 +34,11 @@ public class HandleNewPost {
 	public ResponseEntity<?> newpost(@RequestBody Map<String, Object> data) {
 		System.out.println("Received data " + data);
 		
+		Long creatorId = ((Number) data.get("userId")).longValue();
+		
 		Post newPost = new Post();
 		newPost.setPostText((String) data.get("postTitle"));
-		newPost.setCreatorId((Long) data.get("userId"));
+		newPost.setCreatorId(creatorId);
 		
 		String postWords = newPost.getPostText();
 		
@@ -48,7 +50,7 @@ public class HandleNewPost {
 			postRepository.save(newPost);
 		}
 		
-		Post preparedPost = postFinder.findByCreatorId(newPost.getCreatorId());
+		Post preparedPost = postFinder.findPostById(newPost.getCreatorId());
 		return ResponseEntity.ok(preparedPost);
 	}
 }
