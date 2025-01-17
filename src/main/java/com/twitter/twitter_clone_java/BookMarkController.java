@@ -69,5 +69,14 @@ public class BookMarkController {
 		return ResponseEntity.ok(userBookMarked);
 		
 	}
+	
+	@GetMapping("/grabpostbookmarks/{postID}")
+	public ResponseEntity<List<BookMark>> getBookMarksByPostId(@PathVariable Long postID) {
+		
+		List<BookMark> postBookMarked = bookMarkHandler.fetchPostBookMarks(postID);
+		
+		return ResponseEntity.ok(postBookMarked);
+		
+	}
 
 }

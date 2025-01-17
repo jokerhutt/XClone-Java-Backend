@@ -28,5 +28,14 @@ public class BookMarkHandler {
 			bookMarkRepository.save(newBookMark);
 		}
 	}
+	
+	public List<BookMark> fetchPostBookMarks (Long postId) {
+		List<BookMark> refreshedBookMarks = bookMarkRepository.findAllBookMarksByPostId(postId);
+	    if (refreshedBookMarks == null) {
+	        return new ArrayList<>();
+	    } else {
+			return refreshedBookMarks;
+	    }
+	}
 
 }
