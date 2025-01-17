@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookMarkRepository extends JpaRepository<BookMark, Long>{
-	List<BookMark> findAllBookMarksByUserId(Long userId);
+	List<BookMark> findBookMarksByUserId(Long userId);
 	Optional<BookMark> findBookMarkByUserId(Long userId);
-	List<BookMark> findAllBookMarksByPostId(Long postId);
+	List<BookMark> findBookMarksByPostId(Long postId);
+	Optional<BookMark> findBookMarkByUserIdAndPostId(Long userId, Long postId);
 }

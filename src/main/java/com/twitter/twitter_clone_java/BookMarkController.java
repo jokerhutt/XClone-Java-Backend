@@ -40,7 +40,7 @@ public class BookMarkController {
 		
 		bookMarkHandler.handleBookMarkFlag(userId, postId);
 		
-		List<BookMark> newUserBookMarks =  bookMarkRepository.findAllBookMarksByUserId(userId);
+		List<BookMark> newUserBookMarks =  bookMarkRepository.findBookMarksByUserId(userId);
 		
 		return ResponseEntity.ok(newUserBookMarks);
 	}
@@ -48,12 +48,14 @@ public class BookMarkController {
 	@GetMapping("/grabuserbookmarkedposts/{profileUserId}")
 	public ResponseEntity<List<Post>> getBookMarkedPostsByUserId(@PathVariable Long profileUserId) {
 		
-		List<BookMark> userBookMarked = bookMarkRepository.findAllBookMarksByUserId(profileUserId);
+		List<BookMark> userBookMarked = bookMarkRepository.findBookMarksByUserId(profileUserId);
 		List<Long> bookMarkedPostIds = new ArrayList<>();
 		
 		for (BookMark bookmark : userBookMarked) {
 			bookMarkedPostIds.add(bookmark.getPostId());
 		}
+		
+		
 		
 		List<Post> bookMarkedPosts = postRepository.findAllById(bookMarkedPostIds);
 		
@@ -64,7 +66,7 @@ public class BookMarkController {
 	@GetMapping("/grabuserbookmarked/{profileUserId}")
 	public ResponseEntity<List<BookMark>> getBookMarksByUserId(@PathVariable Long profileUserId) {
 		
-		List<BookMark> userBookMarked = bookMarkRepository.findAllBookMarksByUserId(profileUserId);
+		List<BookMark> userBookMarked = bookMarkRepository.findBookMarksByUserId(profileUserId);
 		
 		return ResponseEntity.ok(userBookMarked);
 		

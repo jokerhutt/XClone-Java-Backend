@@ -17,7 +17,7 @@ public class BookMarkHandler {
 	
 	public void handleBookMarkFlag (Long userId, Long postId) {
 		
-		Optional<BookMark> existingBookMark = bookMarkRepository.findBookMarkByUserId(userId);
+		Optional<BookMark> existingBookMark = bookMarkRepository.findBookMarkByUserIdAndPostId(userId, postId);
 		
 		if(existingBookMark.isPresent()) {
 			bookMarkRepository.delete(existingBookMark.get());
@@ -30,7 +30,7 @@ public class BookMarkHandler {
 	}
 	
 	public List<BookMark> fetchPostBookMarks (Long postId) {
-		List<BookMark> refreshedBookMarks = bookMarkRepository.findAllBookMarksByPostId(postId);
+		List<BookMark> refreshedBookMarks = bookMarkRepository.findBookMarksByPostId(postId);
 	    if (refreshedBookMarks == null) {
 	        return new ArrayList<>();
 	    } else {
