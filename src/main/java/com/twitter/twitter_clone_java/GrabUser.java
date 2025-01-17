@@ -99,6 +99,14 @@ public class GrabUser {
 		
 	}
 	
+	@GetMapping("/posts/{postId}")
+	public ResponseEntity<Post> grabPostByPostId(@PathVariable Long postId) {
+		Long originalPostId = postId.longValue();
+		return ResponseEntity.ok(postFinder.findPostById(originalPostId));
+	}
+	
+	
+	
 	@GetMapping("/grabpostbyrepostid/{postID}")
 	public ResponseEntity<?> grabPostByRepostId(@PathVariable Long postID) {
 		
