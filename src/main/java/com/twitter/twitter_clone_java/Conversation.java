@@ -21,8 +21,8 @@ public class Conversation {
 	@Column(name = "user2_id")
 	private Long user2Id;
 	
-	@Column(name = "last_message_timestamp")
-	private String lastMessageTimeStamp;
+	@Column(name = "last_message_id")
+	private Long lastMessageId;
 	
 	public Conversation() {};
 	
@@ -50,12 +50,12 @@ public class Conversation {
 	    this.user2Id = user2Id;
 	}
 
-	public String getLastMessageTimeStamp() {
-	    return lastMessageTimeStamp;
+	public Long getLastMessageId() {
+	    return lastMessageId;
 	}
 
-	public void setLastMessageTimeStamp(String lastMessageTimeStamp) {
-	    this.lastMessageTimeStamp = lastMessageTimeStamp;
+	public void setLastMessageId(Long lastMessageId) {
+	    this.lastMessageId = lastMessageId;
 	}
 	
 	

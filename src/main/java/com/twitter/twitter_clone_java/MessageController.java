@@ -67,6 +67,11 @@ public class MessageController {
 			
 			notificationHandler.handleNewNotification(newNotification);
 			
+			Long tempConvoId = newMessage.getConversationId();
+			Long tempMessageId = newMessage.getId();
+			
+			conversationHandler.updateConversationLastMessageId(conversationId, tempMessageId);
+			
 			List<Message> refreshedMessages = messageChecker.getAllConversationMessages(newMessage.getConversationId());
 			return ResponseEntity.ok(refreshedMessages);
 		}
@@ -76,7 +81,19 @@ public class MessageController {
 	public ResponseEntity<List<Message>> grabMessagesFromConvo(@PathVariable Long convoId) {
 		List<Message> fetchedConvoMessages = messageChecker.getAllConversationMessages(convoId);
 		return ResponseEntity.ok(fetchedConvoMessages); 
+	}
+	
+	@GetMapping("/grabmessagebymessageid/{messageId}")
+	public ResponseEntity<?> grabMessageFromMessageId(@PathVariable Long messageId) {
+		Optional<Message> fetchedMessage = messageRepository.findMessageById(messageId);
 		
+		if (fetchedMessage.isPresent()) {
+			Message unWrappedMessage = fetchedMessage.get();
+			return ResponseEntity.ok(unWrappedMessage);
+		} else {
+			 return ResponseEntity.badRequest().body("No Messages found!");
+		}
+
 	}
 	
 }

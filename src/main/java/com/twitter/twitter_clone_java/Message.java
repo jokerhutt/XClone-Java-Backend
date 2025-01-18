@@ -27,9 +27,6 @@ public class Message {
 	@Column(name = "message_text")
 	private String messageText;
 	
-	@Column(name = "created_at")
-	private String createdAt;
-	
 	public Message () {};
 	
 	public Long getId() {
@@ -71,14 +68,5 @@ public class Message {
 	public void setMessageText(String messageText) {
 	    this.messageText = messageText;
 	}
-
-	public String getCreatedAt() {
-	    return createdAt;
-	}
-
-	public void setCreatedAt(String createdAt) {
-	    this.createdAt = createdAt;
-	}
-	
 
 }

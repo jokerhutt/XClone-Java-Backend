@@ -47,7 +47,17 @@ public class ConversationHandler {
 			return new ArrayList<>();
 		}
 		
+	}
+	
+	public void updateConversationLastMessageId (Long conversationId, Long messageId) {
 		
+		Optional<Conversation> fetchedConversation = conversationRepository.findConversationById(conversationId);
+		
+		if (fetchedConversation.isPresent()) {
+			Conversation unwrappedConversation = fetchedConversation.get();
+			unwrappedConversation.setLastMessageId(messageId);
+			conversationRepository.save(unwrappedConversation);
+		}
 	}
 	
 	

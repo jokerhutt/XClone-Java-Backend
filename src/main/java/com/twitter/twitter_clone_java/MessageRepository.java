@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface MessageRepository extends JpaRepository<Message, Long> {
 	
 	List<Message> findAllMessagesByConversationId (Long conversationId);
+	Optional<Message> findMessageById (Long id);
 	
 }
