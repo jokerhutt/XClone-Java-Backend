@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-	
 public interface PostRepository extends JpaRepository<Post, Long> {
 	Optional<Post> findByPostId(Long postId);
 	Optional<Post> findByCreatorId(Long creatorId);
 	List<Post> findAllByCreatorId(Long creatorId);
+	List<Post> findAllByCreatorIdIn(List<Long> creatorIds);
 	
 }
 

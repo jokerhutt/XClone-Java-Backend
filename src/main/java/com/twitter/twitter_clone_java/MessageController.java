@@ -35,8 +35,6 @@ public class MessageController {
 	@PostMapping("/newmessage")
 	public ResponseEntity<?> message(@RequestBody Map<String, Object> data) {
 		
-		System.out.println("Received message data " + data);
-		
 	    String senderIdString = (String) data.get("senderId");
 	    String receiverIdString = (String) data.get("receiverId");
 	    
