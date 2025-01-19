@@ -42,5 +42,12 @@ public class PostController {
 	}
 		
 	}
+	
+	@GetMapping("getallposts")
+	public ResponseEntity<List<Post>> grabPostsFromFollowingIds() {
+		List<Post> allPosts = postRepository.findAll();
+		return ResponseEntity.ok(allPosts);
+	}
+	
 
 }

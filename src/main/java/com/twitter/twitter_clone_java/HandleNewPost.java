@@ -1,5 +1,6 @@
 package com.twitter.twitter_clone_java;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,13 @@ public class HandleNewPost {
 	private final UserRepository userRepository;
 	private final PostRepository postRepository;
 	private final PostFinder postFinder;
+	private final PostMediaHandler postMediaHandler;
 	
-	public HandleNewPost(UserRepository userRepository, PostRepository postRepository, PostFinder postFinder) {
+	public HandleNewPost(PostMediaHandler postMediaHandler, UserRepository userRepository, PostRepository postRepository, PostFinder postFinder) {
 		this.userRepository = userRepository;
 		this.postRepository = postRepository;
 		this.postFinder = postFinder;
+		this.postMediaHandler = postMediaHandler;
 	}
 	
 	@Transactional
@@ -35,6 +38,8 @@ public class HandleNewPost {
 		System.out.println("Received data " + data);
 		
 		Long creatorId = ((Number) data.get("userId")).longValue();
+		
+		List<String> postMedia = ((List<String>) data.get("postMedia"));
 		
 		Post newPost = new Post();
 		newPost.setPostText((String) data.get("postTitle"));
@@ -48,8 +53,9 @@ public class HandleNewPost {
 			return ResponseEntity.badRequest().body("Post too long!");
 		} else {
 			postRepository.save(newPost);
+			Long createdPostId = newPost.getPostId();
+			postMediaHandler.handleAddingPostMedia(postMedia, createdPostId);
 		}
-		
 		Post preparedPost = postFinder.findPostById(newPost.getCreatorId());
 		return ResponseEntity.ok(preparedPost);
 	}
