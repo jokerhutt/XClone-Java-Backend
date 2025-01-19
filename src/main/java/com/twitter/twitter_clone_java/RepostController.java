@@ -39,7 +39,7 @@ public class RepostController {
 		newNotification.setNotificationObject(Long.valueOf(data.get("notificationObject").toString()));
 		newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
 		newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
-		newNotification.setIsRead(false);
+		newNotification.setIsRead(0L);
 		
 		repostChecker.handleRepostFlag(postId, reposterId, newNotification);
 		List <Repost> packagedReposts = repostChecker.fetchPostReposts(postId);

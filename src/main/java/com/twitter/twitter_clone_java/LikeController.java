@@ -44,7 +44,7 @@ public class LikeController {
 		newNotification.setNotificationObject(Long.valueOf(data.get("notificationObject").toString()));
 		newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
 		newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
-		newNotification.setIsRead(false);
+		newNotification.setIsRead(0L);
 		
 		likeChecker.handleLikeFlag(postId, likerId, newNotification);
 		

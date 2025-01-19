@@ -33,7 +33,7 @@ public class Notification {
 	  private String createdAt;
 	  
 	  @Column(name = "read")
-	  private boolean isRead;
+	  private Long isRead;
 	  
 	  public Notification () {};
 	  
@@ -43,7 +43,7 @@ public class Notification {
 	  public Long getReceiverId() {return this.receiverId;}
 	  public Long getSenderId() {return this.senderId;}
 	  public String getCreatedAt() {return this.createdAt;}
-	  public boolean getIsRead() {return this.isRead;}
+	  public Long getIsRead() {return this.isRead;}
 	  
 	  public void setId(Long id) {this.id = id;}
 	  public void setNotificationObject(Long notificationObject) {this.notificationObject = notificationObject;}
@@ -51,7 +51,7 @@ public class Notification {
 	  public void setReceiverId(Long receiverId) {this.receiverId = receiverId;}
 	  public void setSenderId(Long senderId) {this.senderId = senderId;}
 	  public void setCreatedAt(String createdAt) {this.createdAt = createdAt;}
-	  public void setIsRead(boolean isRead) {this.isRead = isRead;}
+	  public void setIsRead(Long isRead) {this.isRead = isRead;}
 	  
 	    @Override
 	    public String toString() {

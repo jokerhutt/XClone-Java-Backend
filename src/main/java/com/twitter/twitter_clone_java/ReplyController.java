@@ -56,7 +56,7 @@ public class ReplyController {
     		newNotification.setNotificationObject(replyId);
     		newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
     		newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
-    		newNotification.setIsRead(false);
+    		newNotification.setIsRead(0L);
     		
     		notificationHandler.handleNewNotification(newNotification);
     		

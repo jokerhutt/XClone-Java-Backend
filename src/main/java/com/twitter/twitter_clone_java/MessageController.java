@@ -37,6 +37,13 @@ public class MessageController {
 		
 		System.out.println("Received message data " + data);
 		
+	    String senderIdString = (String) data.get("senderId");
+	    String receiverIdString = (String) data.get("receiverId");
+	    
+	    if (senderIdString == null || receiverIdString == null) {
+	        return ResponseEntity.badRequest().body("Sender or receiver ID cannot be null");
+	    }
+		
 		Long senderId = Long.parseLong((String) data.get("senderId"));
 		Long receiverId = Long.parseLong((String) data.get("receiverId"));
 		String messageText = ((String) data.get("messageText"));
@@ -60,17 +67,17 @@ public class MessageController {
 			
 			Notification newNotification = new Notification();
 			newNotification.setNotificationType((String) data.get("notificationType"));
-			newNotification.setNotificationObject(newMessage.getId());
+			newNotification.setNotificationObject(newMessage.getConversationId());
 			newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
 			newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
-			newNotification.setIsRead(false);
+			newNotification.setIsRead(0L);
 			
 			notificationHandler.handleNewNotification(newNotification);
 			
 			Long tempConvoId = newMessage.getConversationId();
 			Long tempMessageId = newMessage.getId();
 			
-			conversationHandler.updateConversationLastMessageId(conversationId, tempMessageId);
+			conversationHandler.updateConversationLastMessageId(tempConvoId, tempMessageId);
 			
 			List<Message> refreshedMessages = messageChecker.getAllConversationMessages(newMessage.getConversationId());
 			return ResponseEntity.ok(refreshedMessages);
