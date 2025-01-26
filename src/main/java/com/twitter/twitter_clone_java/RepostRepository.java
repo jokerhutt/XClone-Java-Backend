@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RepostRepository extends JpaRepository<Repost, Long>{
 
-	List<Repost> findByPostId(Long postId);
-	Optional<Repost> findRepostByPostIdAndReposterId(Long postId, Long reposterId);
+	List<Repost> findByPostPostId(Long postId);
+	Optional<Repost> findRepostByPostPostIdAndReposterId(Long postId, Long reposterId);
 	List<Repost> findRepostByReposterId(Long reposterId);
 	Repost findSingleRepostByReposterId(Long reposterId);
 }

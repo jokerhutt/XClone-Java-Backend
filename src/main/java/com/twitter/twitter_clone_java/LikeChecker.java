@@ -11,37 +11,49 @@ public class LikeChecker {
 	
 	private final LikeRepository likeRepository;
 	private final NotificationHandler notificationHandler;
+	private final PostRepository postRepository;
 	
-	public LikeChecker(LikeRepository likeRepository, NotificationHandler notificationHandler) {
+	public LikeChecker(PostRepository postRepository, LikeRepository likeRepository, NotificationHandler notificationHandler) {
 		this.likeRepository = likeRepository;
 		this.notificationHandler = notificationHandler;
+		this.postRepository = postRepository;
 	}
 	
 	public void handleLikeFlag(Long postId, Long likerId, Notification newNotification) {
 		
-		Optional<Like> existingLike = likeRepository.findByPostIdAndLikerId(postId, likerId);
+		Optional<Like> existingLike = likeRepository.findByPostPostIdAndLikerId(postId, likerId);
+		
 		
 		if (existingLike.isPresent()) {
+			Post existingPost = existingLike.get().getPost();
+			existingPost.getLikeList().remove(existingLike.get());
+			
 			likeRepository.delete(existingLike.get());
 			notificationHandler.handleDeleteNotification(newNotification);
 		}
 		else {
 			Like newLike = new Like();
-			newLike.setPostId(postId);
-			newLike.setLikerId(likerId);
-			likeRepository.save(newLike);
-			notificationHandler.handleNewNotification(newNotification);
+			Optional<Post> existingPost = postRepository.findByPostId(postId);
+			if (existingPost.isPresent()) {
+				newLike.setPost(existingPost.get());
+				newLike.setLikerId(likerId);
+				likeRepository.save(newLike);
+				notificationHandler.handleNewNotification(newNotification);
+			}
+
 		}
 	}
 	
 	public List<Like> fetchPostLikes (Long postId) {
-		List<Like> refreshedLikes = likeRepository.findByPostId(postId);
+		List<Like> refreshedLikes = likeRepository.findByPostPostId(postId);
 	    if (refreshedLikes == null) {
 	        return new ArrayList<>();
 	    } else {
 			return refreshedLikes;
 	    }
 	}
+	
+	
 	
 	
 	

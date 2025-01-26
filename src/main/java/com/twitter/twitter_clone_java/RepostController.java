@@ -1,7 +1,9 @@
 package com.twitter.twitter_clone_java;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +20,13 @@ import java.util.Map;
 public class RepostController {
 	
 	private final RepostChecker repostChecker;
+	private final RepostRepository repostRepository;
 	private final NotificationHandler notificationHandler;
 	
-	public RepostController (RepostChecker repostChecker, NotificationHandler notificationHandler) {
+	public RepostController (RepostRepository repostRepository, RepostChecker repostChecker, NotificationHandler notificationHandler) {
 		this.repostChecker = repostChecker;
 		this.notificationHandler = notificationHandler;
+		this.repostRepository = repostRepository;
 	}
 	
 	@Transactional
@@ -42,8 +46,16 @@ public class RepostController {
 		newNotification.setIsRead(0L);
 		
 		repostChecker.handleRepostFlag(postId, reposterId, newNotification);
-		List <Repost> packagedReposts = repostChecker.fetchPostReposts(postId);
-		return ResponseEntity.ok(packagedReposts);	
+		
+		Optional <Repost> fetchedRepost = repostRepository.findRepostByPostPostIdAndReposterId(postId, reposterId);
+		
+		if (fetchedRepost.isPresent()) {
+			return ResponseEntity.ok(fetchedRepost.get());
+		} else if (fetchedRepost.isEmpty()) {
+			return ResponseEntity.ok(new ArrayList<>());
+		} else {
+			return ResponseEntity.ok(new ArrayList<>());
+		}
 	}
 	
 	@GetMapping("/postreposts/{POSTID}")
@@ -54,6 +66,13 @@ public class RepostController {
 		}
 		
 		List<Repost> fetchedReposts = repostChecker.fetchPostReposts(POSTID);
+		return ResponseEntity.ok(fetchedReposts);
+	}
+	
+	@GetMapping("/userreposts/{profileUserId}")
+	public ResponseEntity<List<Repost>> getRepostsByUserId(@PathVariable Long profileUserId) {
+		
+		List<Repost> fetchedReposts = repostChecker.fetchPostRepostsByUserId(profileUserId);
 		return ResponseEntity.ok(fetchedReposts);
 	}
 	

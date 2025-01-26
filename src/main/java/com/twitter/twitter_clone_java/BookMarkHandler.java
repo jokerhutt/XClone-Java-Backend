@@ -10,27 +10,37 @@ import org.springframework.stereotype.Component;
 public class BookMarkHandler {
 	
 	private final BookMarkRepository bookMarkRepository;
+	private final PostRepository postRepository;
 	
-	public BookMarkHandler (BookMarkRepository bookMarkRepository) {
+	public BookMarkHandler (PostRepository postRepository, BookMarkRepository bookMarkRepository) {
 		this.bookMarkRepository = bookMarkRepository;
+		this.postRepository = postRepository;
 	}
 	
 	public void handleBookMarkFlag (Long userId, Long postId) {
 		
-		Optional<BookMark> existingBookMark = bookMarkRepository.findBookMarkByUserIdAndPostId(userId, postId);
+		Optional<BookMark> existingBookMark = bookMarkRepository.findBookMarkByUserIdAndPostPostId(userId, postId);
 		
 		if(existingBookMark.isPresent()) {
+			
+			Post existingPost = existingBookMark.get().getPost();
+			existingPost.getBookMarkList().remove(existingBookMark.get());
+			
 			bookMarkRepository.delete(existingBookMark.get());
 		} else {
 			BookMark newBookMark = new BookMark();
-			newBookMark.setPostId(postId);
-			newBookMark.setUserId(userId);
-			bookMarkRepository.save(newBookMark);
+			Optional<Post> existingPost = postRepository.findByPostId(postId);
+			if (existingPost.isPresent()) {
+				newBookMark.setPost(existingPost.get());
+				newBookMark.setUserId(userId);
+				bookMarkRepository.save(newBookMark);
+			}
+
 		}
 	}
 	
 	public List<BookMark> fetchPostBookMarks (Long postId) {
-		List<BookMark> refreshedBookMarks = bookMarkRepository.findBookMarksByPostId(postId);
+		List<BookMark> refreshedBookMarks = bookMarkRepository.findBookMarksByPostPostId(postId);
 	    if (refreshedBookMarks == null) {
 	        return new ArrayList<>();
 	    } else {

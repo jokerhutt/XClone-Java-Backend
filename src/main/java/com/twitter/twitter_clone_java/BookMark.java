@@ -1,10 +1,14 @@
 package com.twitter.twitter_clone_java;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,8 +23,10 @@ public class BookMark {
 	  @Column(name = "user_id")
 	  private Long userId;
 	  
-	  @Column(name = "post_id")
-	  private Long postId;
+	  @ManyToOne
+	  @JoinColumn(name = "post_id")
+	  @JsonBackReference
+	  private Post post;
 	  
 	    public Long getId() {
 	        return id;
@@ -38,13 +44,13 @@ public class BookMark {
 	        this.userId = userId;
 	    }
 
-	    public Long getPostId() {
-	        return postId;
-	    }
+		public Post getPost() {return this.post;}
 
-	    public void setPostId(Long postId) {
-	        this.postId = postId;
-	    }
+		public void setPost(Post post) {this.post = post;}
+		
+		public Long getPostId() {
+		    return this.post != null ? this.post.getPostId() : null;
+		}
 
 	  
 	  

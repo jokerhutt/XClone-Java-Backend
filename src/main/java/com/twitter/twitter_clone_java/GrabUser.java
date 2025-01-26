@@ -38,12 +38,11 @@ public class GrabUser {
 	public ResponseEntity<User> getUserByPostId(@PathVariable Long postId) {
 		Post tempPost = postFinder.findPostById(postId);
 		
-		Long tempCreatorId = tempPost.getCreatorId();
+		User tempCreatorId = tempPost.getCreator();
 		
-		User tempUser = userFinder.findUserById(tempCreatorId);
+		User tempUser = userFinder.findUserById(tempCreatorId.getId());
 		
 		return ResponseEntity.ok(tempUser);
-		
 	}
 	
 	@GetMapping("/grabusers/{profileUserId}")

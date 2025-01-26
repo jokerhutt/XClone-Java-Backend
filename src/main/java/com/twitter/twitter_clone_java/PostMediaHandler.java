@@ -22,10 +22,18 @@ public class PostMediaHandler {
 			
 			for (int i = 0; i < postMedia.size(); i++) {
 				String currentPostMedia = postMedia.get(i);
+				int numberPosition = i + 1;
+				Long convertedPosition = (long) numberPosition;
 				PostMedia newPostMedia = new PostMedia();
 				newPostMedia.setMediaFile(currentPostMedia);
-				newPostMedia.setPostId(postId);
-				postMediaRepository.save(newPostMedia);
+				newPostMedia.setPosition(convertedPosition);
+				
+				Optional <Post> tempPost = postRepository.findByPostId(postId);
+				if (tempPost.isPresent()) {
+					Post postObjectTempPost = tempPost.get();
+					newPostMedia.setPost(postObjectTempPost);
+					postMediaRepository.save(newPostMedia);
+				}
 			}
 		}
 		

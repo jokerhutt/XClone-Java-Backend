@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface ReplyRepository extends JpaRepository<Reply, Long>{
-	List<Reply> findAllByReplyObjectId (Long replyObjectId);
+	List<Reply> findAllByPostPostId (Long postId);
 	List<Reply> findAllByReplySenderId (Long replySenderId);
-	Reply findByReplyObjectId (Long replyObjectId);
+	Reply findByPostPostId (Long postId);
 	public Optional<Reply> findById(Long id);
 }

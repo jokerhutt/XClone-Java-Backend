@@ -31,7 +31,7 @@ public class ReplyController {
 	@PostMapping("/newreply")
 	public ResponseEntity<?> reply(@RequestBody Map<String, Object> data) {
 		
-		Long replyObjectId = ((Number) data.get("replyObjectId")).longValue();
+		Long postId = ((Number) data.get("postId")).longValue();
 		Long replyReceiverId = ((Number) data.get("replyReceiverId")).longValue();
 		Long replySenderId = ((Number) data.get("replySenderId")).longValue();
 		String replyText = ((String) data.get("replyText"));
@@ -41,9 +41,9 @@ public class ReplyController {
         }
 		
 		System.out.println("Reply text is: " +  replyText);
-		Optional<Reply> newReplyObject = replyHandler.handleNewReply(replyObjectId, replyReceiverId, replySenderId, replyText);
+		Optional<Reply> newReplyObject = replyHandler.handleNewReply(postId, replyReceiverId, replySenderId, replyText);
         
-		if (newReplyObject == null) {
+		if (newReplyObject.isEmpty()) {
             return ResponseEntity.badRequest().body("Failed to create reply");
         } else {
         	Reply newReplyThing = (newReplyObject.get());
@@ -60,7 +60,7 @@ public class ReplyController {
     		
     		notificationHandler.handleNewNotification(newNotification);
     		
-    		return ResponseEntity.ok("Nice");
+    		return ResponseEntity.ok(newReplyThing);
         }
 	}
 	

@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
-	List<Like> findByPostId(Long postId);
-	Optional<Like> findByPostIdAndLikerId(Long postId, Long likerId);
+	List<Like> findByPostPostId(Long postId);
+	Optional<Like> findByPostPostIdAndLikerId(Long postId, Long likerId);
 	List<Like> findByLikerId(Long likerId);
+	List<Like> findByPostPostIdIn(List<Long> postIds);
 }

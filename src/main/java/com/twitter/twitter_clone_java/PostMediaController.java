@@ -28,15 +28,17 @@ public class PostMediaController {
 	}
 	
 	
-	@GetMapping("grabpostmedia/{postID}")
-	public ResponseEntity<List<PostMedia>> getAllPostMediaByPostId(@PathVariable Long postID) {
-		List<PostMedia> fetchedPostMedia = postMediaRepository.findAllByPostId(postID);
-		
-		if (fetchedPostMedia == null) {
-			return ResponseEntity.ok(new ArrayList<>());
-		} else {
-			return ResponseEntity.ok(fetchedPostMedia);
-		}
-		
-	}
+//	@GetMapping("grabpostmedia/{postID}")
+//	public ResponseEntity<List<PostMedia>> getAllPostMediaByPostId(@PathVariable Long postID) {
+//		List<PostMedia> fetchedPostMedia = postMediaRepository.findAllByPostPostId(postID);
+//		
+//		if (fetchedPostMedia == null) {
+//			return ResponseEntity.ok(new ArrayList<>());
+//		} else {
+//			return ResponseEntity.ok(fetchedPostMedia);
+//		}
+//	}
+	
+	
+	
 }

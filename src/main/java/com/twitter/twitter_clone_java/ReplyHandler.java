@@ -10,30 +10,35 @@ import org.springframework.stereotype.Component;
 public class ReplyHandler {
 	
 	private final ReplyRepository replyRepository;
+	private final PostRepository postRepository;
 	private final NotificationHandler notificationHandler;
 	
-	public  ReplyHandler (ReplyRepository replyRepository, NotificationHandler notificationHandler) {
+	public  ReplyHandler (PostRepository postRepository, ReplyRepository replyRepository, NotificationHandler notificationHandler) {
 		this.replyRepository = replyRepository;
 		this.notificationHandler = notificationHandler;
+		this.postRepository = postRepository;
 	}
 	
-	public Optional<Reply> handleNewReply (Long replyObjectId, Long replyReceiverId, Long replySenderId, String replyText) {
+	public Optional<Reply> handleNewReply (Long postId, Long replyReceiverId, Long replySenderId, String replyText) {
 		
 		Reply newReply = new Reply();
-		newReply.setReplyObjectId(replyObjectId);
-		newReply.setReplyReceiverId(replyReceiverId);
-		newReply.setReplySenderId(replySenderId);
-		newReply.setReplyText(replyText);
 		
-		replyRepository.save(newReply);
+		Optional<Post> existingPost = postRepository.findByPostId(postId);
+		if (existingPost.isPresent()) {
+			newReply.setPost(existingPost.get());
+			newReply.setReplyReceiverId(replyReceiverId);
+			newReply.setReplySenderId(replySenderId);
+			newReply.setReplyText(replyText);
+			
+			replyRepository.save(newReply);
+		}
 		
 		return replyRepository.findById(newReply.getId());
-		
 		
 	}
 	
 	public  List<Reply> fetchRepliesList (Long replyObjectId) {
-		List<Reply> fetchedPostReplies = replyRepository.findAllByReplyObjectId(replyObjectId);
+		List<Reply> fetchedPostReplies = replyRepository.findAllByPostPostId(replyObjectId);
 		if (fetchedPostReplies == null) {
 			return new ArrayList<>();
 		} else {

@@ -1,5 +1,7 @@
 package com.twitter.twitter_clone_java;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,12 +17,20 @@ public class User {
     private Long id;
 	
 	private String username;
-	private String password;
+	
 	private String email;
+	
 	private String bio;
+	
 	private String profilePic;
+	
 	private String displayName;
+	
 	private String backGround;
+	  
+	@JsonIgnore
+	private String password;
+
 	
 	public User() {}
 	

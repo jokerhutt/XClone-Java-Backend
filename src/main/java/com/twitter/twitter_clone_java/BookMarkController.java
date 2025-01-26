@@ -40,9 +40,16 @@ public class BookMarkController {
 		
 		bookMarkHandler.handleBookMarkFlag(userId, postId);
 		
-		List<BookMark> newUserBookMarks =  bookMarkRepository.findBookMarksByUserId(userId);
+		Optional<BookMark> newUserBookMark =  bookMarkRepository.findBookMarkByUserIdAndPostPostId(userId, postId);
+		if (newUserBookMark.isPresent()) {
+			return ResponseEntity.ok(newUserBookMark.get());
+		} else if (newUserBookMark.isEmpty()) {
+			return ResponseEntity.ok(new ArrayList<>());
+		} else {
+			return ResponseEntity.ok(new ArrayList<>());
+		}
 		
-		return ResponseEntity.ok(newUserBookMarks);
+
 	}
 	
 	@GetMapping("/grabuserbookmarkedposts/{profileUserId}")
@@ -52,10 +59,9 @@ public class BookMarkController {
 		List<Long> bookMarkedPostIds = new ArrayList<>();
 		
 		for (BookMark bookmark : userBookMarked) {
-			bookMarkedPostIds.add(bookmark.getPostId());
+			Post bookMarkPost = bookmark.getPost();
+			bookMarkedPostIds.add(bookMarkPost.getPostId());
 		}
-		
-		
 		
 		List<Post> bookMarkedPosts = postRepository.findAllById(bookMarkedPostIds);
 		
@@ -65,12 +71,11 @@ public class BookMarkController {
 	
 	@GetMapping("/grabuserbookmarked/{profileUserId}")
 	public ResponseEntity<List<BookMark>> getBookMarksByUserId(@PathVariable Long profileUserId) {
-		
 		List<BookMark> userBookMarked = bookMarkRepository.findBookMarksByUserId(profileUserId);
-		
 		return ResponseEntity.ok(userBookMarked);
-		
 	}
+	
+	
 	
 	@GetMapping("/grabpostbookmarks/{postID}")
 	public ResponseEntity<List<BookMark>> getBookMarksByPostId(@PathVariable Long postID) {

@@ -3,6 +3,7 @@ package com.twitter.twitter_clone_java;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,11 +49,36 @@ public class LikeController {
 		
 		likeChecker.handleLikeFlag(postId, likerId, newNotification);
 		
-		List<Like> packagedLike = likeChecker.fetchPostLikes(postId);
+		Optional<Like> fetchedLike = likeRepository.findByPostPostIdAndLikerId(postId, likerId);
+		if (fetchedLike.isPresent()) {
+			return ResponseEntity.ok(fetchedLike.get());
+		} else if (fetchedLike.isEmpty()) {
+			return ResponseEntity.ok(new ArrayList<>());
+		} else {
+			return ResponseEntity.ok(new ArrayList<>());
+		}
+	}
+	
+	@GetMapping("/grabuserlikedpostslist/{profileUserId}")
+	public ResponseEntity<List<Like>> getUserLikedPostsList (@PathVariable Long profileUserId) {
+		List<Like> userLikedIds = likeRepository.findByLikerId(profileUserId);
+	
 		
-		return ResponseEntity.ok(packagedLike);
+		return ResponseEntity.ok(userLikedIds);
 		
 	}
+	
+//	List<Long> likePostIds = new ArrayList<>();
+//	
+//	for (int i = 0; i < userLikedIds.size(); i++) {
+//		Like currentLikedId = userLikedIds.get(i);
+//		Long currentPostId = currentLikedId.getPostId();
+//		likePostIds.add(currentPostId);
+//	}
+//	
+//	List<Like> fetchedLikedPostsLikes = likeRepository.findByPostPostIdIn(likePostIds)
+	
+	
 	
 	@GetMapping("/postlikes/{POSTID}")
 	public ResponseEntity<List<Like>> getLikesByPostId(@PathVariable Long POSTID) {
@@ -67,23 +93,20 @@ public class LikeController {
 	
 	@GetMapping("/grabuserlikes/{profileUserId}")
 	public ResponseEntity<List<Post>> getLikedPostsByUserId(@PathVariable Long profileUserId) {
-		
 		for (int i = 0; i < 20; i++) {
 			System.out.println("Liker id is: " + profileUserId);
 		}
-	
 		List<Like> userLikedPosts = likeRepository.findByLikerId(profileUserId);
 		List<Long> likedPostIds = new ArrayList<>();
-		
 		for (Like like : userLikedPosts) {
-		    likedPostIds.add(like.getPostId());
+			Post tempPost = like.getPost();
+		    likedPostIds.add(tempPost.getPostId());
 		}
-		
 		List<Post> likedPosts = postRepository.findAllById(likedPostIds);
-		
 	    return ResponseEntity.ok(likedPosts);
-		
 	}
+	
+	
 	
 	
 	

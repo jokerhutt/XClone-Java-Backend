@@ -43,7 +43,11 @@ public class HandleNewPost {
 		
 		Post newPost = new Post();
 		newPost.setPostText((String) data.get("postTitle"));
-		newPost.setCreatorId(creatorId);
+		
+		User creator = userRepository.findById(creatorId)
+			    .orElseThrow(() -> new RuntimeException("User not found"));
+		
+		newPost.setCreator(creator);
 		
 		String postWords = newPost.getPostText();
 		
@@ -56,7 +60,7 @@ public class HandleNewPost {
 			Long createdPostId = newPost.getPostId();
 			postMediaHandler.handleAddingPostMedia(postMedia, createdPostId);
 		}
-		Post preparedPost = postFinder.findPostById(newPost.getCreatorId());
+		Post preparedPost = postFinder.findPostById(newPost.getPostId());
 		return ResponseEntity.ok(preparedPost);
 	}
 }
