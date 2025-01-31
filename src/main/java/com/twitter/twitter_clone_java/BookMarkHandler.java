@@ -8,24 +8,24 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BookMarkHandler {
-	
+
 	private final BookMarkRepository bookMarkRepository;
 	private final PostRepository postRepository;
-	
+
 	public BookMarkHandler (PostRepository postRepository, BookMarkRepository bookMarkRepository) {
 		this.bookMarkRepository = bookMarkRepository;
 		this.postRepository = postRepository;
 	}
-	
+
 	public void handleBookMarkFlag (Long userId, Long postId) {
-		
+
 		Optional<BookMark> existingBookMark = bookMarkRepository.findBookMarkByUserIdAndPostPostId(userId, postId);
-		
+
 		if(existingBookMark.isPresent()) {
-			
+
 			Post existingPost = existingBookMark.get().getPost();
 			existingPost.getBookMarkList().remove(existingBookMark.get());
-			
+
 			bookMarkRepository.delete(existingBookMark.get());
 		} else {
 			BookMark newBookMark = new BookMark();
@@ -38,7 +38,7 @@ public class BookMarkHandler {
 
 		}
 	}
-	
+
 	public List<BookMark> fetchPostBookMarks (Long postId) {
 		List<BookMark> refreshedBookMarks = bookMarkRepository.findBookMarksByPostPostId(postId);
 	    if (refreshedBookMarks == null) {

@@ -11,8 +11,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	Optional<Post> findByCreatorId(Long creatorId);
 	List<Post> findAllByCreatorId(Long creatorId);
 	List<Post> findAllByCreatorIdIn(List<Long> creatorIds);
+	@Override
 	List<Post> findAll();
-	
+
 }
 
 

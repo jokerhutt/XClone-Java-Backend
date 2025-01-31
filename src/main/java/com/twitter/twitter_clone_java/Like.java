@@ -14,30 +14,30 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "likes")
 public class Like {
-	
+
     @Id //Always requires, indicated ID is a primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Indicates SQL should auto generate
     private Long id;
-	
+
 	  @ManyToOne
 	  @JoinColumn(name = "post_id")
 	  @JsonBackReference
 	  private Post post;
-	
+
 	@Column(name = "user_id")
 	private Long likerId;
-	
-	public Like () {};
-	
+
+	public Like () {}
+
 	public Post getPost() {return this.post;}
 	public Long getLikerId() {return this.likerId;}
-	
+
 	public void setPost(Post post) {this.post = post;}
 	public void setLikerId(Long likerId) {this.likerId = likerId;}
-	
+
 	public Long getPostId() {
 	    return this.post != null ? this.post.getPostId() : null;
 	}
-	
+
 
 }

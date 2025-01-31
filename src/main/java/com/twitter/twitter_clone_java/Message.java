@@ -10,25 +10,25 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "messages")
 public class Message {
-	
+
     @Id //Always requires, indicated ID is a primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Indicates SQL should auto generate
     private Long id;
-    
+
 	@Column(name = "sender_id")
 	private Long senderId;
-	
+
 	@Column(name = "receiver_id")
 	private Long receiverId;
-	
+
 	@Column(name = "conversation_id")
 	private Long conversationId;
-	
+
 	@Column(name = "message_text")
 	private String messageText;
-	
-	public Message () {};
-	
+
+	public Message () {}
+
 	public Long getId() {
 	    return id;
 	}

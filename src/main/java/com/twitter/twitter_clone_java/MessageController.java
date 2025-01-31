@@ -1,16 +1,19 @@
 package com.twitter.twitter_clone_java;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.transaction.Transactional;
-
-import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
 
@@ -18,80 +21,80 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class MessageController {
-	
+
 	private final ConversationHandler conversationHandler;
 	private final MessageChecker messageChecker;
 	private final MessageRepository messageRepository;
 	private final NotificationHandler notificationHandler;
-	
+
 	public MessageController (NotificationHandler notificationHandler, MessageRepository messageRepository, ConversationHandler conversationHandler, MessageChecker messageChecker) {
 		this.conversationHandler = conversationHandler;
 		this.messageChecker = messageChecker;
 		this.messageRepository = messageRepository;
 		this.notificationHandler = notificationHandler;
 	}
-	
+
 	@Transactional
 	@PostMapping("/newmessage")
 	public ResponseEntity<?> message(@RequestBody Map<String, Object> data) {
-		
+
 	    String senderIdString = (String) data.get("senderId");
 	    String receiverIdString = (String) data.get("receiverId");
-	    
+
 	    if (senderIdString == null || receiverIdString == null) {
 	        return ResponseEntity.badRequest().body("Sender or receiver ID cannot be null");
 	    }
-		
+
 		Long senderId = Long.parseLong((String) data.get("senderId"));
 		Long receiverId = Long.parseLong((String) data.get("receiverId"));
 		String messageText = ((String) data.get("messageText"));
-		
+
 		Optional<Conversation> fetchedConversation = conversationHandler.convoDoubleCheckHandler(senderId, receiverId);
 		if (fetchedConversation.isEmpty()) {
 			 return ResponseEntity.badRequest().body("Failed to create reply");
 		} else {
 			Conversation unpackedConversation = fetchedConversation.get();
 			Long grabbedConvoId = unpackedConversation.getId();
-			
+
 			Long conversationId = grabbedConvoId;
-			
+
 			Message newMessage = new Message();
 			newMessage.setSenderId(senderId);
 			newMessage.setReceiverId(receiverId);
 			newMessage.setMessageText(messageText);
 			newMessage.setConversationId(conversationId);
-			
+
 			messageRepository.save(newMessage);
-			
+
 			Notification newNotification = new Notification();
 			newNotification.setNotificationType((String) data.get("notificationType"));
 			newNotification.setNotificationObject(newMessage.getConversationId());
 			newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
 			newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
 			newNotification.setIsRead(0L);
-			
+
 			notificationHandler.handleNewNotification(newNotification);
-			
+
 			Long tempConvoId = newMessage.getConversationId();
 			Long tempMessageId = newMessage.getId();
-			
+
 			conversationHandler.updateConversationLastMessageId(tempConvoId, tempMessageId);
-			
+
 			List<Message> refreshedMessages = messageChecker.getAllConversationMessages(newMessage.getConversationId());
 			return ResponseEntity.ok(refreshedMessages);
 		}
 	}
-	
+
 	@GetMapping("/grabmessagesbyconvoid/{convoId}")
 	public ResponseEntity<List<Message>> grabMessagesFromConvo(@PathVariable Long convoId) {
 		List<Message> fetchedConvoMessages = messageChecker.getAllConversationMessages(convoId);
-		return ResponseEntity.ok(fetchedConvoMessages); 
+		return ResponseEntity.ok(fetchedConvoMessages);
 	}
-	
+
 	@GetMapping("/grabmessagebymessageid/{messageId}")
 	public ResponseEntity<?> grabMessageFromMessageId(@PathVariable Long messageId) {
 		Optional<Message> fetchedMessage = messageRepository.findMessageById(messageId);
-		
+
 		if (fetchedMessage.isPresent()) {
 			Message unWrappedMessage = fetchedMessage.get();
 			return ResponseEntity.ok(unWrappedMessage);
@@ -100,5 +103,5 @@ public class MessageController {
 		}
 
 	}
-	
+
 }

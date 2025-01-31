@@ -14,31 +14,31 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "replies")
 public class Reply {
-	
+
 	@Id
 	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	  @Column(name = "id")
 	  private Long id;
-	
+
 	  @ManyToOne
 	  @JoinColumn(name = "post_id")
 	  @JsonBackReference
 	  private Post post;
-	  
+
 	  @Column(name = "receiver_id")
 	  private Long replyReceiverId;
-	  
+
 	  @Column(name = "created_by_user_id")
 	  private Long replySenderId;
-	  
+
 	  @Column(name = "reply_text")
 	  private String replyText;
-	  
+
 	  @Column(name = "created_datetime")
 	  private String createdAt;
-	  
-	  public Reply () {};
-	  
+
+	  public Reply () {}
+
 	    public Long getId() {
 	        return id;
 	    }
@@ -50,6 +50,10 @@ public class Reply {
 	    public Post getPost() {
 	        return post;
 	    }
+
+		public Long getPostId() {
+		    return this.post != null ? this.post.getPostId() : null;
+		}
 
 	    public void setPost(Post post) {
 	        this.post = post;
@@ -86,11 +90,8 @@ public class Reply {
 	    public void setCreatedAt(String createdAt) {
 	        this.createdAt = createdAt;
 	    }
-	    
-		public Long getPostId() {
-		    return this.post != null ? this.post.getPostId() : null;
-		}
-	  
-	 
+
+
+
 
 }

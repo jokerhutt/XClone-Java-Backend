@@ -3,13 +3,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SignupChecker {
-	
+
 	private final UserRepository userRepository;
-	
+
 	public SignupChecker(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-	
+
 	public boolean SignupCheck (User user) {
 		if (this.userRepository.existsByUsername(user.getUsername())) {
 			return true;

@@ -14,20 +14,20 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "bookmarks")
 public class BookMark {
-	
+
 	@Id
 	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	  @Column(name = "id")
 	  private Long id;
-	
+
 	  @Column(name = "user_id")
 	  private Long userId;
-	  
+
 	  @ManyToOne
 	  @JoinColumn(name = "post_id")
 	  @JsonBackReference
 	  private Post post;
-	  
+
 	    public Long getId() {
 	        return id;
 	    }
@@ -35,7 +35,7 @@ public class BookMark {
 	    public void setId(Long id) {
 	        this.id = id;
 	    }
-	    
+
 	    public Long getUserId() {
 	        return userId;
 	    }
@@ -47,11 +47,11 @@ public class BookMark {
 		public Post getPost() {return this.post;}
 
 		public void setPost(Post post) {this.post = post;}
-		
+
 		public Long getPostId() {
 		    return this.post != null ? this.post.getPostId() : null;
 		}
 
-	  
-	  
+
+
 }

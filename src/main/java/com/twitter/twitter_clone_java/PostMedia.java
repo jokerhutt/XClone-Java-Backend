@@ -19,20 +19,20 @@ public class PostMedia {
 	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	  @Column(name = "id")
 	  private Long id;
-	  
+
 	  @ManyToOne
 	  @JoinColumn(name = "post_id")
 	  @JsonBackReference
 	  private Post post;
-	  
+
 	  @Column(name = "media_file")
 	  private String mediaFile;
-	  
+
 	  @Column(name = "position")
 	  private Long position;
-	  
-	  public PostMedia() {};
-	  
+
+	  public PostMedia() {}
+
 	    public Long getId() {
 	        return id;
 	    }
@@ -40,11 +40,11 @@ public class PostMedia {
 	    public void setId(Long id) {
 	        this.id = id;
 	    }
-	    
+
 	    public Long getPosition() {
 	    	return position;
 	    }
-	    
+
 	    public void setPosition(Long position) {
 	    	this.position = position;
 	    }
@@ -64,5 +64,19 @@ public class PostMedia {
 	    public void setMediaFile(String mediaFile) {
 	        this.mediaFile = mediaFile;
 	    }
-	
+
+		public Long getPostId() {
+		    return this.post != null ? this.post.getPostId() : null;
+		}
+		
+		@Override
+		public String toString() {
+		    return "PostMedia{" +
+		            "id=" + id +
+		            ", postId=" + (post != null ? post.getPostId() : null) +
+		            ", mediaFile='" + mediaFile + '\'' +
+		            ", position=" + position +
+		            '}';
+		}
+
 }

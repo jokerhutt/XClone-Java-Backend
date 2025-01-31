@@ -8,25 +8,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RepostChecker {
-	
+
 	private final RepostRepository repostRepository;
 	private final NotificationHandler notificationHandler;
 	private final PostRepository postRepository;
-	
+
 	public RepostChecker(PostRepository postRepository, RepostRepository repostRepository, NotificationHandler notificationHandler) {
 		this.repostRepository = repostRepository;
 		this.notificationHandler = notificationHandler;
 		this.postRepository = postRepository;
 	}
-	
+
 	public void handleRepostFlag(Long postId, Long reposterId, Notification newNotification) {
-		
+
 		Optional<Repost> existingRepost = repostRepository.findRepostByPostPostIdAndReposterId(postId, reposterId);
-		
+
 		if (existingRepost.isPresent()) {
 			Post existingPost = existingRepost.get().getPost();
 			existingPost.getRepostList().remove(existingRepost.get());
-			
+
 			repostRepository.delete(existingRepost.get());
 			notificationHandler.handleDeleteNotification(newNotification);
 		} else {
@@ -40,9 +40,9 @@ public class RepostChecker {
 			}
 
 		}
-		
+
 	}
-	
+
 	public List<Repost> fetchPostReposts (Long postId) {
 		List <Repost> refreshedReposts = repostRepository.findByPostPostId(postId);
 		if (refreshedReposts == null) {
@@ -51,7 +51,7 @@ public class RepostChecker {
 			return refreshedReposts;
 		}
 	}
-	
+
 	public List<Repost> fetchPostRepostsByUserId (Long userId) {
 		List <Repost> refreshedReposts = repostRepository.findRepostByReposterId(userId);
 		if (refreshedReposts == null) {
@@ -60,8 +60,8 @@ public class RepostChecker {
 			return refreshedReposts;
 		}
 	}
-	
-	
-	
+
+
+
 
 }

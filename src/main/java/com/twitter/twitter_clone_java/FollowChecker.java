@@ -6,19 +6,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FollowChecker {
-	
+
 	private final FollowRepository followRepository;
 	private final NotificationHandler notificationHandler;
-	
+
 	public FollowChecker(FollowRepository followRepository, NotificationHandler notificationHandler) {
 		this.followRepository = followRepository;
 		this.notificationHandler = notificationHandler;
 	}
-	
+
 	public void handleFollowFlag(Long followingId, Long followedId, Notification newNotification) {
-		
+
 		Optional<Follow> existingFollow = followRepository.findByFollowingIdAndFollowedId(followingId, followedId);
-		
+
 		if (existingFollow.isPresent()) {
 			followRepository.delete(existingFollow.get());
 			notificationHandler.handleDeleteNotification(newNotification);
@@ -29,10 +29,10 @@ public class FollowChecker {
 			followRepository.save(newFollow);
 			notificationHandler.handleNewNotification(newNotification);
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 
 }

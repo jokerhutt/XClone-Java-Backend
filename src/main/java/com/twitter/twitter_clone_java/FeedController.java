@@ -1,19 +1,12 @@
 package com.twitter.twitter_clone_java;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import jakarta.transaction.Transactional;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:5173")
 
@@ -21,48 +14,60 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class FeedController {
-	
+
     private PostRepository postRepository;
-	
-	public FeedController (PostRepository postRepository) {
+    private FollowRepository followRepository;
+
+	public FeedController (FollowRepository followRepository, PostRepository postRepository) {
 		this.postRepository = postRepository;
+		this.followRepository = followRepository;
 	}
-	
+
 	    @GetMapping("/foryoufeed")
 	    	public Page<Post> getForYouFeed(
 	        @RequestParam(defaultValue = "0") int page,
 	        @RequestParam(defaultValue = "10") int size
 	    	) 	{
-	    	
+
 	    		System.out.println("Ohhh yeah i just received a request");
 		        PageRequest pageRequest = PageRequest.of(page, size);
-	
+
 		        Page<Post> postsPage = postRepository.findAll(pageRequest);
-	
+
 		        return postsPage;
-		        
+
 	    	}
-	    
+
 //	    @GetMapping("/followingfeed/{profileUserId}")
 //    	public Page<Post> getFollowingFeed(
+//    	@PathVariable Long profileUserId,
 //        @RequestParam(defaultValue = "0") int page,
 //        @RequestParam(defaultValue = "10") int size
 //    	) 	{
 //	        PageRequest pageRequest = PageRequest.of(page, size);
-//	        
-//	        List<User>
 //
-//	        Page<Post> postsPage = postRepository.findAll(pageRequest);
+//			List<Follow> userFollowing = followRepository.findAllByFollowingId(profileUserId);
+//
+//			ArrayList<Long> followingIds = new ArrayList<>();
+//
+//			for (int i = 0; i < userFollowing.size(); i++) {
+//				Follow currentFollow = userFollowing.get(i);
+//				Long currentFollowId = currentFollow.getFollowedId();
+//				followingIds.add(currentFollowId);
+//			}
+//
+//
+//	        Page<Post> postsPage = postRepository.findAllByCreatorIdIn(followingIds, pageRequest);
 //
 //	        return postsPage;
 //    	}
-//	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 }
 
 
-	
+

@@ -14,18 +14,18 @@ public class Conversation {
     @Id //Always requires, indicated ID is a primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Indicates SQL should auto generate
     private Long id;
-    
+
 	@Column(name = "user1_id")
 	private Long user1Id;
-	
+
 	@Column(name = "user2_id")
 	private Long user2Id;
-	
+
 	@Column(name = "last_message_id")
 	private Long lastMessageId;
-	
-	public Conversation() {};
-	
+
+	public Conversation() {}
+
 	public Long getId() {
 	    return id;
 	}
@@ -57,6 +57,6 @@ public class Conversation {
 	public void setLastMessageId(Long lastMessageId) {
 	    this.lastMessageId = lastMessageId;
 	}
-	
-	
+
+
 }

@@ -19,11 +19,11 @@ import jakarta.transaction.Transactional;
 @RestController
 @RequestMapping("/api")
 public class NotificationController {
-	
+
 	private NotificationHandler notificationHandler;
 	private PostFinder postFinder;
 	private NotificationRepository notificationRepository;
-	
+
 	public NotificationController (NotificationHandler notificationHandler, PostFinder postFinder, NotificationRepository notificationRepository) {
 		this.notificationHandler = notificationHandler;
 		this.postFinder = postFinder;
@@ -32,38 +32,37 @@ public class NotificationController {
 
 	@GetMapping("/notifications/{profileUserId}")
 	public ResponseEntity<List<Notification>> grabNotificationsForUser(@PathVariable Long profileUserId) {
-		
+
 		List<Notification> fetchedNotifications = notificationHandler.grabUserNotifications(profileUserId);
 		return ResponseEntity.ok(fetchedNotifications);
 	}
-	
+
 	@GetMapping("/grabnotificationpost/{notificationPostId}")
 	public ResponseEntity<Post> grabPostNotification(@PathVariable Long notificationPostId) {
 		return ResponseEntity.ok(postFinder.findPostById(notificationPostId));
 	}
-	
+
 	@Transactional
 	@PostMapping("/markasread")
 	public ResponseEntity<?> markAsRead(@RequestBody Map<String, Object> data) {
-		
+
 		Long notificationObject = ((Number) data.get("notificationObjectId")).longValue();
 		Long receiverId = ((Number) data.get("receiverId")).longValue();
 		Long senderId = ((Number) data.get("senderId")).longValue();
 		String notificationType = ((String) data.get("notificationType"));
-		
+
 		List<Notification> fetchedNotifications = notificationRepository.findAllByReceiverIdAndSenderIdAndNotificationObjectAndNotificationType(receiverId, senderId, notificationObject, notificationType);
-		
-		for (int i = 0; i < fetchedNotifications.size(); i++) {
-		    Notification notification = fetchedNotifications.get(i);
+
+		for (Notification notification : fetchedNotifications) {
 		    System.out.println("BEFORE IS: " + notification.getIsRead());
 		    notification.setIsRead(1L);
 //		    notificationRepository.save(notification);
 //		    System.out.println("BEFORE IS: " + notification.getIsRead());
 		}
-		
+
 		return ResponseEntity.ok(fetchedNotifications);
 	}
-	
-	
-	
+
+
+
 }
