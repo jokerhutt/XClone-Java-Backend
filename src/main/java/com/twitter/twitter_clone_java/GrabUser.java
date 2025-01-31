@@ -3,14 +3,19 @@ package com.twitter.twitter_clone_java;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.transaction.Transactional;
 
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -52,6 +57,8 @@ public class GrabUser {
 		return ResponseEntity.ok(fetchedProfileUser);
 
 	}
+	
+	
 
 	@GetMapping("/grabposts/{profileUserId}")
 	public ResponseEntity<List<Post>> getPostByUserId(@PathVariable Long profileUserId) {
@@ -119,7 +126,19 @@ public class GrabUser {
 
 	}
 
+	@Transactional
+	@PostMapping("/getallusersbyuserids")
+	public ResponseEntity<List<User>> grabUsersFromUserIds(@RequestBody Map<String, List<Long>> requestBody) {
+	List<Long> userIds = requestBody.get("userIds");
+	List<User> fetchedUsers = userRepository.findAllByIdIn(userIds);
 
+	if (fetchedUsers == null) {
+		return ResponseEntity.ok(new ArrayList<>());
+	} else {
+		return ResponseEntity.ok(fetchedUsers);
+	}
+
+	}
 
 
 

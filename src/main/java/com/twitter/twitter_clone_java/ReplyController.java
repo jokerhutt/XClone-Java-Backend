@@ -30,6 +30,20 @@ public class ReplyController {
 		this.notificationHandler = notificationHandler;
 		this.replyHandler = replyHandler;
 	}
+	
+	@Transactional
+	@PostMapping("/getallreplypostsbyreplyids")
+	public ResponseEntity<List<Post>> grabPostsFromReplyIds(@RequestBody Map<String, List<Long>> requestBody) {
+	List<Long> replyIds = requestBody.get("replyIds");
+	List<Post> fetchedPosts = replyHandler.getPostsByReplyIds(replyIds);
+
+	if (fetchedPosts == null) {
+		return ResponseEntity.ok(new ArrayList<>());
+	} else {
+		return ResponseEntity.ok(fetchedPosts);
+	}
+
+	}
 
 	@Transactional
 	@PostMapping("/newreply")

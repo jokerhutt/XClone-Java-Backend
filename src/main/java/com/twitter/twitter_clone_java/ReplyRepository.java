@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface ReplyRepository extends JpaRepository<Reply, Long>{
 	List<Reply> findAllByPostPostId (Long postId);
 	List<Reply> findAllByReplySenderId (Long replySenderId);
+	List<Reply> findAllByIdIn (List<Long> Ids);
 	Reply findByPostPostId (Long postId);
 	@Override
 	public Optional<Reply> findById(Long id);
