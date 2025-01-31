@@ -1,5 +1,6 @@
 package com.twitter.twitter_clone_java;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +33,9 @@ public class Post {
 
 	  @Column(name = "post_text")
 	  private String postText;
-
-	  @Column(name = "created_at")
-	  private String createdAt;
+	 
+	  @Column(name = "created_at", updatable = false, insertable = false)
+	  private LocalDateTime createdAt;
 
 	  @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL,  orphanRemoval = true)
 	  @JsonManagedReference
@@ -71,7 +72,9 @@ public class Post {
 
 	  public User getCreator() {return this.creator;}
 	  public String getPostText() {return this.postText;}
-	  public String getCreatedAt() {return this.createdAt;}
+	  public LocalDateTime getCreatedAt() {
+		    return createdAt;
+		}
 
 	  public void setPostId(Long postId) {this.postId = postId;}
 
@@ -84,7 +87,6 @@ public class Post {
 
 	  public void setCreator(User creator) {this.creator = creator;}
 	  public void setPostText(String postText) {this.postText = postText;}
-	  public void setCreatedAt(String createdAt) {this.createdAt = createdAt;}
 
 	    @Override
 	    public String toString() {

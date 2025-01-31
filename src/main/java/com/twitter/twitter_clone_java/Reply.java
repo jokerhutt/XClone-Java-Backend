@@ -1,5 +1,7 @@
 package com.twitter.twitter_clone_java;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -34,8 +36,8 @@ public class Reply {
 	  @Column(name = "reply_text")
 	  private String replyText;
 
-	  @Column(name = "created_datetime")
-	  private String createdAt;
+	  @Column(name = "created_datetime", updatable = false, insertable = false)
+	  private LocalDateTime createdAt;
 
 	  public Reply () {}
 
@@ -83,13 +85,9 @@ public class Reply {
 	        this.replyText = replyText;
 	    }
 
-	    public String getCreatedAt() {
-	        return createdAt;
-	    }
-
-	    public void setCreatedAt(String createdAt) {
-	        this.createdAt = createdAt;
-	    }
+		  public LocalDateTime getCreatedAt() {
+			    return createdAt;
+			}
 
 
 

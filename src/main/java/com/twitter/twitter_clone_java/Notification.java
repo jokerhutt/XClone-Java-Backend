@@ -1,5 +1,7 @@
 package com.twitter.twitter_clone_java;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,8 +31,8 @@ public class Notification {
 	  @Column(name = "sender_id")
 	  private Long senderId;
 
-	  @Column(name = "created_at")
-	  private String createdAt;
+	  @Column(name = "created_at", updatable = false, insertable = false)
+	  private LocalDateTime createdAt;
 
 	  @Column(name = "read")
 	  private Long isRead;
@@ -42,7 +44,9 @@ public class Notification {
 	  public Long getNotificationObject() {return this.notificationObject;}
 	  public Long getReceiverId() {return this.receiverId;}
 	  public Long getSenderId() {return this.senderId;}
-	  public String getCreatedAt() {return this.createdAt;}
+	  public LocalDateTime getCreatedAt() {
+		    return createdAt;
+		}
 	  public Long getIsRead() {return this.isRead;}
 
 	  public void setId(Long id) {this.id = id;}
@@ -50,7 +54,6 @@ public class Notification {
 	  public void setNotificationType(String notificationType) {this.notificationType = notificationType;}
 	  public void setReceiverId(Long receiverId) {this.receiverId = receiverId;}
 	  public void setSenderId(Long senderId) {this.senderId = senderId;}
-	  public void setCreatedAt(String createdAt) {this.createdAt = createdAt;}
 	  public void setIsRead(Long isRead) {this.isRead = isRead;}
 
 	    @Override
