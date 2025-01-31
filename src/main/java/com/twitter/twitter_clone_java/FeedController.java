@@ -32,9 +32,7 @@ public class FeedController {
 	    		System.out.println("Ohhh yeah i just received a request");
 		        PageRequest pageRequest = PageRequest.of(page, size);
 
-		        Page<Post> postsPage = postRepository.findAll(pageRequest);
-
-		        return postsPage;
+		        return postRepository.findAllByOrderByCreatedAtDesc(pageRequest);
 
 	    	}
 
