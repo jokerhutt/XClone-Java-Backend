@@ -29,7 +29,6 @@ public class FeedController {
 	        @RequestParam(defaultValue = "10") int size
 	    	) 	{
 
-	    		System.out.println("Ohhh yeah i just received a request");
 		        PageRequest pageRequest = PageRequest.of(page, size);
 
 		        return postRepository.findAllByOrderByCreatedAtDesc(pageRequest);

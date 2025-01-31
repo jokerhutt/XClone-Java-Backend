@@ -36,6 +36,13 @@ public class NotificationController {
 		List<Notification> fetchedNotifications = notificationHandler.grabUserNotifications(profileUserId);
 		return ResponseEntity.ok(fetchedNotifications);
 	}
+	
+	@GetMapping("/nonmessagenotifications/{profileUserId}")
+	public ResponseEntity<List<Notification>> grabNonMessageNotificationsForUser(@PathVariable Long profileUserId) {
+
+		List<Notification> fetchedNotifications = notificationRepository.findAllByReceiverIdAndNotificationTypeNot(profileUserId, "MESSAGE");
+		return ResponseEntity.ok(fetchedNotifications);
+	}
 
 	@GetMapping("/grabnotificationpost/{notificationPostId}")
 	public ResponseEntity<Post> grabPostNotification(@PathVariable Long notificationPostId) {
