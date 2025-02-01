@@ -36,13 +36,12 @@ public class ReplyHandler {
 		return replyRepository.findById(newReply.getId());
 
 	}
-	
+
 	public List<Post> getPostsByReplyIds (List <Long> replyIds) {
-		
+
 		List<Reply> fetchedReplies = replyRepository.findAllByIdIn(replyIds);
 		ArrayList<Post> replyPosts = new ArrayList<>();
-		for (int i = 0; i < fetchedReplies.size(); i++) {
-			Reply currentReply = fetchedReplies.get(i);
+		for (Reply currentReply : fetchedReplies) {
 			Post currentReplyPost = currentReply.getPost();
 			replyPosts.add(currentReplyPost);
 		}

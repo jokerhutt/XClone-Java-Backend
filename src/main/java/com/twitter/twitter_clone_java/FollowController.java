@@ -3,6 +3,7 @@ package com.twitter.twitter_clone_java;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -49,15 +50,19 @@ public class FollowController {
 
 		followChecker.handleFollowFlag(followingId, followedId, newNotification);
 
-		List<Follow> userFollowing = followRepository.findAllByFollowingId(followingId);
-
-		return ResponseEntity.ok(userFollowing);
+		Optional <Follow> foundFollow = followRepository.findByFollowingUserIdAndFollowedUserId(followingId, followedId);
+		if (foundFollow.isPresent()) {
+			System.out.println("FOUND FOLLOW IS PRESENT " + foundFollow.get().toString());
+			return ResponseEntity.ok(foundFollow.get());
+		} else {
+			return ResponseEntity.ok(new ArrayList<>());
+		}
 	}
 
 	@GetMapping("/grabuserfollowing/{profileUserId}")
 	public ResponseEntity<List<Follow>> getUserFollowingByFollowingId(@PathVariable Long profileUserId) {
 
-		List<Follow> userFollowing = followRepository.findAllByFollowingId(profileUserId);
+		List<Follow> userFollowing = followRepository.findAllByFollowingUserId(profileUserId);
 
 		if (userFollowing == null) {
 			return ResponseEntity.ok(new ArrayList<>());
@@ -69,7 +74,7 @@ public class FollowController {
 	@GetMapping("/grabuserfollowers/{profileUserId}")
 	public ResponseEntity<List<Follow>> getUserFollowersByFollowingId(@PathVariable Long profileUserId) {
 
-		List<Follow> userFollowers = followRepository.findAllByFollowedId(profileUserId);
+		List<Follow> userFollowers = followRepository.findAllByFollowedUserId(profileUserId);
 
 		if (userFollowers == null) {
 			return ResponseEntity.ok(new ArrayList<>());

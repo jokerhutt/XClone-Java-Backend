@@ -33,7 +33,7 @@ public class Post {
 
 	  @Column(name = "post_text")
 	  private String postText;
-	 
+
 	  @Column(name = "created_at", updatable = false, insertable = false)
 	  private LocalDateTime createdAt;
 

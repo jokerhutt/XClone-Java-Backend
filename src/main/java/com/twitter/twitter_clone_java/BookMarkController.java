@@ -56,6 +56,20 @@ public class BookMarkController {
 
 	}
 
+	@Transactional
+	@PostMapping("/getallfollowersbyfollowerId")
+	public ResponseEntity<List<Post>> grabPostsFromPostIds(@RequestBody Map<String, List<Long>> requestBody) {
+	List<Long> postIds = requestBody.get("postIds");
+	List<Post> fetchedPosts = postRepository.findAllByPostIdIn(postIds);
+
+	if (fetchedPosts == null) {
+		return ResponseEntity.ok(new ArrayList<>());
+	} else {
+		return ResponseEntity.ok(fetchedPosts);
+	}
+
+	}
+
 	@GetMapping("/grabuserbookmarkedposts/{profileUserId}")
 	public ResponseEntity<List<Post>> getBookMarkedPostsByUserId(@PathVariable Long profileUserId) {
 

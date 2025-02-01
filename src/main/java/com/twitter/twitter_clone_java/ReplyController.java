@@ -30,7 +30,7 @@ public class ReplyController {
 		this.notificationHandler = notificationHandler;
 		this.replyHandler = replyHandler;
 	}
-	
+
 	@Transactional
 	@PostMapping("/getallreplypostsbyreplyids")
 	public ResponseEntity<List<Post>> grabPostsFromReplyIds(@RequestBody Map<String, List<Long>> requestBody) {

@@ -40,7 +40,6 @@ public class LikeChecker {
 				likeRepository.save(newLike);
 				notificationHandler.handleNewNotification(newNotification);
 			}
-
 		}
 	}
 

@@ -57,8 +57,8 @@ public class GrabUser {
 		return ResponseEntity.ok(fetchedProfileUser);
 
 	}
-	
-	
+
+
 
 	@GetMapping("/grabposts/{profileUserId}")
 	public ResponseEntity<List<Post>> getPostByUserId(@PathVariable Long profileUserId) {

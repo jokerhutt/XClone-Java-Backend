@@ -1,7 +1,6 @@
 package com.twitter.twitter_clone_java;
 
 import java.util.List;
-import jakarta.persistence.EntityManager;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -71,7 +71,7 @@ public class HandleNewPost {
 		            .orElseThrow(() -> new RuntimeException("Post not found after media update"));
 		    entityManager.refresh(updatedPost);
 		    System.out.println("NEW FETCHED POST IS: " + updatedPost.toString());
-		    
+
 			return ResponseEntity.ok(updatedPost);
 
 

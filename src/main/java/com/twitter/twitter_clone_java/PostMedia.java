@@ -68,7 +68,7 @@ public class PostMedia {
 		public Long getPostId() {
 		    return this.post != null ? this.post.getPostId() : null;
 		}
-		
+
 		@Override
 		public String toString() {
 		    return "PostMedia{" +
