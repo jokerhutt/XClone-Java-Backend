@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.transaction.Transactional;
+
 @Component
 public class RepostChecker {
 
@@ -19,6 +21,7 @@ public class RepostChecker {
 		this.postRepository = postRepository;
 	}
 
+	@Transactional
 	public void handleRepostFlag(Long postId, Long reposterId, Notification newNotification) {
 
 		Optional<Repost> existingRepost = repostRepository.findRepostByPostPostIdAndReposterId(postId, reposterId);

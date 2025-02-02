@@ -32,7 +32,6 @@ public class FollowChecker {
 		    userRepository.save(existingFollowedUser);
 		    userRepository.save(existingFollowingUser);
 
-
 			System.out.println("DELETING IMPORTANT STUFF THIS IS GOOD");
 			followRepository.delete(existingFollow.get());
 			followRepository.flush();

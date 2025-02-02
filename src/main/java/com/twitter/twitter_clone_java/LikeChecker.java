@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.transaction.Transactional;
+
 @Component
 public class LikeChecker {
 
@@ -19,6 +21,7 @@ public class LikeChecker {
 		this.postRepository = postRepository;
 	}
 
+	@Transactional
 	public void handleLikeFlag(Long postId, Long likerId, Notification newNotification) {
 
 		Optional<Like> existingLike = likeRepository.findByPostPostIdAndLikerId(postId, likerId);
@@ -27,7 +30,6 @@ public class LikeChecker {
 		if (existingLike.isPresent()) {
 			Post existingPost = existingLike.get().getPost();
 			existingPost.getLikeList().remove(existingLike.get());
-
 			likeRepository.delete(existingLike.get());
 			notificationHandler.handleDeleteNotification(newNotification);
 		}
