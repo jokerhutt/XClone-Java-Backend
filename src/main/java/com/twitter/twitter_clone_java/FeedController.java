@@ -56,8 +56,7 @@ public class FeedController {
 				followingIds.add(currentFollowId);
 			}
 
-
-	        Page<Post> postsPage = postRepository.findAllPostsByCreatorIdIn(followingIds, pageRequest);
+	        Page<Post> postsPage = postRepository.findAllByCreatorIdInOrderByCreatedAtDesc(followingIds, pageRequest);
 
 	        return postsPage;
     	}

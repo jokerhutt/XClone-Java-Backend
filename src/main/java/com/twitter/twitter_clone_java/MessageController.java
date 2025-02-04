@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.TextMessage;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
 
@@ -20,12 +26,14 @@ import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api")
-public class MessageController {
+public class MessageController implements ApplicationContextAware{
 
 	private final ConversationHandler conversationHandler;
 	private final MessageChecker messageChecker;
 	private final MessageRepository messageRepository;
 	private final NotificationHandler notificationHandler;
+	
+	private ApplicationContext applicationContext;
 
 	public MessageController (NotificationHandler notificationHandler, MessageRepository messageRepository, ConversationHandler conversationHandler, MessageChecker messageChecker) {
 		this.conversationHandler = conversationHandler;
@@ -33,14 +41,22 @@ public class MessageController {
 		this.messageRepository = messageRepository;
 		this.notificationHandler = notificationHandler;
 	}
+	
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+
 
 	@Transactional
 	@PostMapping("/newmessage")
 	public ResponseEntity<?> message(@RequestBody Map<String, Object> data) {
+		
+		WebSocketHandler webSocketHandler = applicationContext.getBean(WebSocketHandler.class);
 
 	    String senderIdString = (String) data.get("senderId");
 	    String receiverIdString = (String) data.get("receiverId");
-
+	    
 	    if (senderIdString == null || receiverIdString == null) {
 	        return ResponseEntity.badRequest().body("Sender or receiver ID cannot be null");
 	    }
@@ -81,6 +97,15 @@ public class MessageController {
 			conversationHandler.updateConversationLastMessageId(tempConvoId, tempMessageId);
 
 			List<Message> refreshedMessages = messageChecker.getAllConversationMessages(newMessage.getConversationId());
+			
+		    try {
+		        String messageJson = new ObjectMapper().writeValueAsString(newMessage);
+		        webSocketHandler.broadcastMessage(new TextMessage(messageJson));
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+			
+			
 			return ResponseEntity.ok(refreshedMessages);
 		}
 	}
@@ -103,5 +128,7 @@ public class MessageController {
 		}
 
 	}
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.twitter.twitter_clone_java;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,12 @@ public class NotificationController {
 		List<Notification> fetchedNotifications = notificationRepository.findAllByReceiverIdAndNotificationTypeNot(profileUserId, "MESSAGE");
 		return ResponseEntity.ok(fetchedNotifications);
 	}
+	
+	@GetMapping("/messagenotifications/{profileUserId}")
+		public ResponseEntity<List<Notification>> grabMessageNotificationsForUser(@PathVariable Long profileUserId) {
+			List<Notification> fetchedNotifications = notificationRepository.findAllByReceiverIdAndNotificationTypeAndIsRead(profileUserId, "MESSAGE", 0L);
+			return ResponseEntity.ok(fetchedNotifications);
+		}
 
 	@GetMapping("/grabnotificationpost/{notificationPostId}")
 	public ResponseEntity<Post> grabPostNotification(@PathVariable Long notificationPostId) {
@@ -63,11 +70,9 @@ public class NotificationController {
 		for (Notification notification : fetchedNotifications) {
 		    System.out.println("BEFORE IS: " + notification.getIsRead());
 		    notification.setIsRead(1L);
-//		    notificationRepository.save(notification);
-//		    System.out.println("BEFORE IS: " + notification.getIsRead());
 		}
-
-		return ResponseEntity.ok(fetchedNotifications);
+		ArrayList<Long> placeHolderReponse = new ArrayList<>();
+		return ResponseEntity.ok(placeHolderReponse);
 	}
 
 
