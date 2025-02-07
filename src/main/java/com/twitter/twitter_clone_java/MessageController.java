@@ -1,10 +1,10 @@
 package com.twitter.twitter_clone_java;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,8 @@ import org.springframework.web.socket.TextMessage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -28,11 +30,14 @@ import jakarta.transaction.Transactional;
 @RequestMapping("/api")
 public class MessageController implements ApplicationContextAware{
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
 	private final ConversationHandler conversationHandler;
 	private final MessageChecker messageChecker;
 	private final MessageRepository messageRepository;
 	private final NotificationHandler notificationHandler;
-	
+
 	private ApplicationContext applicationContext;
 
 	public MessageController (NotificationHandler notificationHandler, MessageRepository messageRepository, ConversationHandler conversationHandler, MessageChecker messageChecker) {
@@ -41,7 +46,7 @@ public class MessageController implements ApplicationContextAware{
 		this.messageRepository = messageRepository;
 		this.notificationHandler = notificationHandler;
 	}
-	
+
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
@@ -51,12 +56,12 @@ public class MessageController implements ApplicationContextAware{
 	@Transactional
 	@PostMapping("/newmessage")
 	public ResponseEntity<?> message(@RequestBody Map<String, Object> data) {
-		
+
 		WebSocketHandler webSocketHandler = applicationContext.getBean(WebSocketHandler.class);
 
 	    String senderIdString = (String) data.get("senderId");
 	    String receiverIdString = (String) data.get("receiverId");
-	    
+
 	    if (senderIdString == null || receiverIdString == null) {
 	        return ResponseEntity.badRequest().body("Sender or receiver ID cannot be null");
 	    }
@@ -81,33 +86,47 @@ public class MessageController implements ApplicationContextAware{
 			newMessage.setConversationId(conversationId);
 
 			messageRepository.save(newMessage);
-
-			Notification newNotification = new Notification();
-			newNotification.setNotificationType((String) data.get("notificationType"));
-			newNotification.setNotificationObject(newMessage.getConversationId());
-			newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
-			newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
-			newNotification.setIsRead(0L);
-
-			notificationHandler.handleNewNotification(newNotification);
-
 			Long tempConvoId = newMessage.getConversationId();
 			Long tempMessageId = newMessage.getId();
+			
+			messageRepository.flush();
+			Optional <Message> updatedMessage = messageRepository.findById(tempMessageId);
+			
+			if (updatedMessage.isPresent()) {
+				
+				entityManager.refresh(updatedMessage.get());
 
-			conversationHandler.updateConversationLastMessageId(tempConvoId, tempMessageId);
+				Notification newNotification = new Notification();
+				newNotification.setNotificationType((String) data.get("notificationType"));
+				newNotification.setNotificationObject(updatedMessage.get().getConversationId());
+				newNotification.setReceiverId(Long.valueOf(data.get("receiverId").toString()));
+				newNotification.setSenderId(Long.valueOf(data.get("senderId").toString()));
+				newNotification.setIsRead(0L);
 
-			List<Message> refreshedMessages = messageChecker.getAllConversationMessages(newMessage.getConversationId());
-			
-		    try {
-		        String messageJson = new ObjectMapper().writeValueAsString(newMessage);
-		        webSocketHandler.broadcastMessage(new TextMessage(messageJson));
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		    }
-			
-			
-			return ResponseEntity.ok(refreshedMessages);
+				notificationHandler.handleNewNotification(newNotification);
+
+				conversationHandler.updateConversationLastMessageId(tempConvoId, tempMessageId);
+
+				List<Message> refreshedMessages = messageChecker.getAllConversationMessages(updatedMessage.get().getConversationId());
+
+			    try {
+			    	String messageJson = updatedMessage.get().toString();
+			    	webSocketHandler.broadcastMessage(new TextMessage(messageJson));
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+
+				return ResponseEntity.ok(refreshedMessages);
+			} else {
+				return ResponseEntity.ok(new ArrayList<>());
+			}
+
+
+
+
 		}
+		
+		
 	}
 
 	@GetMapping("/grabmessagesbyconvoid/{convoId}")
@@ -128,6 +147,7 @@ public class MessageController implements ApplicationContextAware{
 		}
 
 	}
+	
 
 
 

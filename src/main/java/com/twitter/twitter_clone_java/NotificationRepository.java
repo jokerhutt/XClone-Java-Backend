@@ -17,7 +17,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
 	List<Notification> findAllByReceiverIdAndNotificationTypeNot(Long receiverId, String notificationType);
 	List<Notification> findAllByReceiverIdAndNotificationTypeAndIsRead(Long receiverId, String notificationType, Long isRead);
-	
+
 	Optional <Notification> findByReceiverIdAndSenderIdAndNotificationObjectAndNotificationType (Long receiverId, Long senderId, Long notificationObject, String notificationType);
 
 	@Modifying

@@ -84,7 +84,6 @@ public class BookMarkController {
 		List<Post> bookMarkedPosts = postRepository.findAllById(bookMarkedPostIds);
 
 		return ResponseEntity.ok(bookMarkedPosts);
-
 	}
 
 	@GetMapping("/grabuserbookmarked/{profileUserId}")

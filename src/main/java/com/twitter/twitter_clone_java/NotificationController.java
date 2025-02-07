@@ -44,7 +44,7 @@ public class NotificationController {
 		List<Notification> fetchedNotifications = notificationRepository.findAllByReceiverIdAndNotificationTypeNot(profileUserId, "MESSAGE");
 		return ResponseEntity.ok(fetchedNotifications);
 	}
-	
+
 	@GetMapping("/messagenotifications/{profileUserId}")
 		public ResponseEntity<List<Notification>> grabMessageNotificationsForUser(@PathVariable Long profileUserId) {
 			List<Notification> fetchedNotifications = notificationRepository.findAllByReceiverIdAndNotificationTypeAndIsRead(profileUserId, "MESSAGE", 0L);

@@ -24,7 +24,7 @@ public class NotificationHandler {
 	public void handleDeleteNotification (Notification passedNotification) {
 		System.out.println("PASSED NOTIFICATION IS: " + passedNotification.toString());
 		Optional <Notification> findToDelete = notificationRepository.findByReceiverIdAndSenderIdAndNotificationObjectAndNotificationType(passedNotification.getReceiverId(), passedNotification.getSenderId(), passedNotification.getNotificationObject(), passedNotification.getNotificationType());
-		
+
 		if (findToDelete.isPresent()) {
 			System.out.println("DELETING NOTIFICATION " + findToDelete.get().toString());
 			this.notificationRepository.delete(findToDelete.get());

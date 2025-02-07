@@ -2,14 +2,19 @@ package com.twitter.twitter_clone_java;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.transaction.Transactional;
 
 @CrossOrigin(origins = "http://localhost:5173")
 
@@ -53,37 +58,51 @@ public class ConversationController {
 		List <Conversation> fetchedUserConvos = conversationHandler.fetchUserConvosDoubleCheckHandler(userId);
 		return ResponseEntity.ok(fetchedUserConvos);
 	}
-	
+
 	@GetMapping("/userconversationsotherusers/{userId}")
 	public ResponseEntity<List<User>> getUserConvosUsersByUserId(@PathVariable Long userId) {
 
 		List <Conversation> fetchedUserConvos = conversationHandler.fetchUserConvosDoubleCheckHandler(userId);
 		ArrayList <Long> otherUserIds = new ArrayList <> ();
-		for (int i = 0; i < fetchedUserConvos.size(); i++) {
-			Conversation currentConvo = fetchedUserConvos.get(i);
+		for (Conversation currentConvo : fetchedUserConvos) {
 			if (currentConvo.getUser1Id() == userId) {
 				otherUserIds.add(currentConvo.getUser2Id());
 			} else {
 				otherUserIds.add(currentConvo.getUser1Id());
 			}
 		}
-		
+
 		List<User> foundUsersFromConvo = userRepository.findAllByIdIn(otherUserIds);
-		
+
 		return ResponseEntity.ok(foundUsersFromConvo);
 	}
 	
+	@Transactional
+	@PostMapping("/newconvo")
+	public ResponseEntity<?> newConvo(@RequestBody Map<String, Object> data) {
+
+		System.out.println("Received like data " + data);
+
+		Long user1Id = ((Number) data.get("user1Id")).longValue();
+		Long user2Id = ((Number) data.get("user2Id")).longValue();
+
+
+		Conversation newConversation = conversationHandler.handleNewConvo(user1Id, user2Id);
+		return ResponseEntity.ok(newConversation);
+		
+	}
+		
+
 	@GetMapping("/userconversationsmessages/{userId}")
 	public ResponseEntity<List<Message>> getUserConvosMessagesByUserId(@PathVariable Long userId) {
-		
+
 		List <Conversation> fetchedUserConvos = conversationHandler.fetchUserConvosDoubleCheckHandler(userId);
 		ArrayList <Long> messageIds = new ArrayList <> ();
-		for (int i = 0; i < fetchedUserConvos.size(); i++) {
-			Conversation currentConvo = fetchedUserConvos.get(i);
+		for (Conversation currentConvo : fetchedUserConvos) {
 			messageIds.add(currentConvo.getId());
 		}
 		List<Message> fetchedAllMessages = messageRepository.findAllMessagesByConversationIdIn(messageIds);
-		
+
 		return ResponseEntity.ok(fetchedAllMessages);
 	}
 

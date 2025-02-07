@@ -1,13 +1,15 @@
 package com.twitter.twitter_clone_java;
 
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
@@ -25,15 +27,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
     	System.out.println("Connection established with session ID: " + session.getId());
         sessions.add(session);
     }
-    
-    
+
+
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         System.out.println("🔴 Connection closed: " + session.getId() + " Reason: " + status);
         sessions.remove(session);
     }
-    
+
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         Map<String, Object> messageData = objectMapper.readValue(message.getPayload(), Map.class);

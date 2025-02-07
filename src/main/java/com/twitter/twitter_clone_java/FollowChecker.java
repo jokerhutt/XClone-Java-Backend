@@ -28,7 +28,7 @@ public class FollowChecker {
 			existingFollowedUser.getFollowerList().remove(existingFollow.get());
 			User existingFollowingUser = existingFollow.get().getFollowingUser();
 			existingFollowingUser.getFollowingList().remove(existingFollow.get());
-			
+
 		    userRepository.save(existingFollowedUser);
 		    userRepository.save(existingFollowingUser);
 

@@ -1,5 +1,10 @@
 package com.twitter.twitter_clone_java;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +31,9 @@ public class Message {
 
 	@Column(name = "message_text")
 	private String messageText;
+
+	  @Column(name = "created_at", updatable = false, insertable = false)
+	  private LocalDateTime createdAt;
 
 	public Message () {}
 
@@ -68,5 +76,24 @@ public class Message {
 	public void setMessageText(String messageText) {
 	    this.messageText = messageText;
 	}
+
+	  public LocalDateTime getCreatedAt() {
+		    return createdAt;
+		}
+	  
+	  @Override
+	  public String toString() {
+	      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	      String formattedCreatedAt = (createdAt != null) ? createdAt.format(formatter) : null;
+
+	      return "{" +
+	             "\"id\": " + id + "," +
+	             "\"senderId\": " + senderId + "," +
+	             "\"receiverId\": " + receiverId + "," +
+	             "\"conversationId\": " + conversationId + "," +
+	             "\"messageText\": \"" + messageText + "\"," +
+	             "\"createdAt\": \"" + formattedCreatedAt + "\"" +
+	             "}";
+	  }
 
 }

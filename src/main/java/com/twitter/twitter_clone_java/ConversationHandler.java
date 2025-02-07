@@ -28,6 +28,30 @@ public class ConversationHandler {
 			return Optional.empty();
 		}
 	}
+	
+	public Conversation createNewConvo (Long user1Id, Long user2Id) {
+		System.out.println("CREATING NEW CONVO");
+		Conversation newConvo = new Conversation();
+		newConvo.setUser1Id(user1Id);
+		newConvo.setUser2Id(user2Id);
+		conversationRepository.save(newConvo);
+		return newConvo;
+	}
+	
+	public Conversation handleNewConvo (Long user1Id, Long user2Id) {
+
+		Optional<Conversation> isExistingConvo = convoDoubleCheckHandler(user1Id, user2Id);
+		
+		if (isExistingConvo.isPresent()) {
+			return isExistingConvo.get();
+		} else  {
+			System.out.println("OUIA");
+			Conversation newConversation = createNewConvo(user1Id, user2Id);
+			return newConversation;
+		}
+		
+		
+	}
 
 	public List<Conversation> fetchUserConvosDoubleCheckHandler (Long user1Id) {
 
